@@ -64,7 +64,7 @@ def sample_mdp(all_langs, max_langs, dist_mtx, id2lang):
     return [id2lang[i] for i in langs]
 
 
-def sample_mmdp(all_langs, max_langs, dist_mtx, id2lang):
+def sample_mmdp(max_langs, dist_mtx, id2lang):
     """
     TODO: add proper description
     maxmindivp
@@ -73,7 +73,7 @@ def sample_mmdp(all_langs, max_langs, dist_mtx, id2lang):
     # TODO: all_langs --> dist mtx should be cropped to these... (maybe in main)
 
     p1 = get_first_point(dist_mtx)
-    p2 = dist_mtx[p1].argmax()
+    p2 = np.nanargmax(dist_mtx[p1])
 
     L = { i for i in range(dist_mtx.shape[0]) }
     S = {p1, p2}
@@ -81,12 +81,7 @@ def sample_mmdp(all_langs, max_langs, dist_mtx, id2lang):
     while len(S) < max_langs:
         rest_L = tuple(L.symmetric_difference(S))
         rest_dists = dist_mtx[rest_L,:].T[tuple(S),:].T
-        min_dists = rest_dists.min(axis=1)
-        candidates = np.flatnonzero(min_dists == np.max(min_dists))
-        if len(candidates) == 0:
-            import pdb; pdb.set_trace()
-        S.add(candidates[np.random.randint(0, len(candidates))])
-        # S.add(rest_L[rest_dists.min(axis=1).argmax()])
+        S.add(rest_L[np.nanargmax(np.nanmin(rest_dists, axis=1))])
 
     return [id2lang[i] for i in S]
 
@@ -178,7 +173,7 @@ def main():
     print(f"Random within language families: {', '.join(sorted(sample_random_family(n_langs, args.k_langs)))}")
     print(f"Random within language genera: {', '.join(sorted(sample_random_genus(n_langs, args.k_langs)))}")
     print(f"MDP typological sampling: {', '.join(sorted(sample_mdp(n_langs, args.k_langs, dist_mtx, id2lang)))}")
-    print(f"MMDP typological sampling: {', '.join(sample_mmdp(n_langs, args.k_langs, dist_mtx, id2lang))}")
+    print(f"MMDP typological sampling: {', '.join(sample_mmdp(args.k_langs, dist_mtx, id2lang))}")
 
     # TODO: get k (num) and N (langs), verify
     # TODO: get sampling method, if typological --> run distance calculation first (with weights) --> or: do we do this in preprocessing.py? perhaps... and arguments could be given there, too
