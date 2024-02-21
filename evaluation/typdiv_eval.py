@@ -12,7 +12,8 @@ import math
 def create_arg_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--lang_file",
+        "-s",
+        "--sample",
         type=str,
         default='samples/random_genus-langs_gb-10-gb_vec_sim_0-123.txt',
         help="File with languages to select from, one language code per line.",
@@ -38,7 +39,7 @@ def main():
 
     args = create_arg_parser()
 
-    with open(args.lang_file) as langsfile:
+    with open(args.sample) as langsfile:
         langs = [x.strip() for x in langsfile.readlines()]
 
     gb_matrix = pd.read_csv('../data/gb_lang_feat_vals.csv')
