@@ -34,5 +34,6 @@ def get_summed_dist_dict(distance_dict, all_langs, current_langs):
 
     return summed_dist_dict
 
+
 def get_first_point(dists):
     return np.argmax(dists.sum(axis=1))
