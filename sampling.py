@@ -1,6 +1,6 @@
 """
 Description:    Sample k languages from N, using different methods
-Usage:          python sampling.py -s <SAMPLING_METHOD> -f <NUM_LANGS> -n <ALL_LANGS> -l <LANG_SIM>
+Usage:          python sampling.py -s <SAMPLING_METHOD> -k <NUM_LANGS> -n <ALL_LANGS> -l <LANG_SIM>
 """
 
 
