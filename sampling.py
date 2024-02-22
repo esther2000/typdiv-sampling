@@ -130,7 +130,7 @@ def sample_random_family(languages, max_langs):
         new_sample = g_df[~(g_df["Glottocode"].isin(codes))].sample(
             1, random_state=RAND_SEED
         )
-        codes.append(new_sample["Glottocode"])
+        codes.append(new_sample["Glottocode"].values[0])
 
     return codes
 
@@ -171,7 +171,7 @@ def sample_random_genus(languages, max_langs):
         new_sample = g_df[~(g_df["Glottocode"].isin(codes))].sample(
             1, random_state=RAND_SEED
         )
-        codes.append(new_sample["Glottocode"])
+        codes.append(new_sample["Glottocode"].values[0])
 
     return codes
 
