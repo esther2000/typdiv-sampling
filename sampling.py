@@ -117,7 +117,7 @@ def sample_random_family(languages, max_langs):
         return random.sample(codes.tolist(), max_langs)
 
     # Figure out how many to get from the families (as even per lang as possible)
-    n_families = len(g_df["Family_ID"].unique())
+    n_families = len(g_df["Family_name"].unique())
     s_size = max_langs // n_families
     codes = (
         g_df.groupby("Family_name")
