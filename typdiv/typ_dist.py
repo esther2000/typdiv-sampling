@@ -6,6 +6,7 @@ def dist(p1, p2):
     out = np.linalg.norm(p1 - p2)
     return out
 
+
 def get_dist_matrix(data):
     n = len(data)
     out = []
@@ -19,13 +20,10 @@ def get_dist_matrix(data):
 
 
 def dist_score(sol_idxs, d):
-    return d[sol_idxs,:].T[sol_idxs,:].T.sum() / 2
+    return d[sol_idxs, :].T[sol_idxs, :].T.sum() / 2
 
 
 def get_summed_dist_dict(distance_dict, all_langs, current_langs):
-    """
-     ...
-    """
     summed_dist_dict = defaultdict(int)
 
     for l1 in current_langs:

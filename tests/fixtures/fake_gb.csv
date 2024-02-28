@@ -1,0 +1,101 @@
+ID,Name,Macroarea,Latitude,Longitude,Glottocode,ISO639P3code,provenance,Family_name,Family_level_ID,Language_level_ID,level,lineage
+abkh1244,Abkhaz,Eurasia,43.056218,41.159115,abkh1244,,BHR_abkh1244.tsv,Abkhaz-Adyge,abkh1242,abkh1244,language,abkh1242/abkh1243
+alab1237,Alabama,North America,30.76738,-94.62848,alab1237,,ER_alab1237.tsv,Muskogean,musk1252,alab1237,language,musk1252/alab1247
+alag1248,Alagwa,Africa,-4.64148,35.7231,alag1248,,SR_alag1248.tsv,Afro-Asiatic,afro1255,alag1248,language,afro1255/cush1243/sout3054/west2720/nort3164
+ambu1247,Ambulas,Papunesia,-3.7801,143.059,ambu1247,,MD-GR-RSI_ambu1247.tsv,Ndu,nduu1242,ambu1247,language,nduu1242/nucl1642/ambu1246
+bagv1239,Bagvalal,Eurasia,42.3966,46.1041,bagv1239,,NH_bagv1239.tsv,Nakh-Daghestanian,nakh1245,bagv1239,language,nakh1245/dagh1238/avar1255/andi1254/bagv1240
+beli1257,Beli (South Sudan),Africa,6.40428,29.7954,beli1257,,NH_beli1257.tsv,Central Sudanic,cent2225,beli1257,language,cent2225/sara1341/moro1282/moro1293
+bezh1248,Bezhta,Eurasia,42.1206,46.0332,bezh1248,,NH_bezh1248.tsv,Nakh-Daghestanian,nakh1245,bezh1248,language,nakh1245/dagh1238/avar1255/tsez1239/east2368
+boro1282,Bororo,South America,-16.6029,-55.2004,boro1282,,JG_boro1282.tsv,Bororoan,boro1281,boro1282,language,boro1281/boro1285
+bube1242,Bube,Africa,3.53638,8.68929,bube1242,,JK_bube1242.tsv,Atlantic-Congo,atla1278,bube1242,language,atla1278/volt1241/benu1247/bant1294/sout3152/narr1281/mbam1254
+bugi1244,Buginese,Papunesia,-4.47,119.977,bugi1244,,JLA_bugi1244.tsv,Austronesian,aust1307,bugi1244,language,aust1307/mala1545/sout2923/bugi1243/bugi1245
+bura1267,Burarra,Australia,-12.3061,134.365,bura1267,,MD-GR-RSI_bura1267.tsv,Maningrida,mani1293,bura1267,language,mani1293/bure1237/bure1238
+cent1972,Central Kurdish,Eurasia,35.6539,45.8077,cent1972,,JLA_cent1972.tsv,Indo-European,indo1319,cent1972,language,indo1319/clas1257/indo1320/iran1269/cent2317/cent2318/nort3177/laki1246/kurd1259
+chig1238,Chiga,Africa,-1.04387,29.9122,chig1238,,SVM_chig1238.tsv,Atlantic-Congo,atla1278,chig1238,language,atla1278/volt1241/benu1247/bant1294/sout3152/narr1281/east2731/nort3203/grea1289/west2841/ruta1242/nort3228/nkor1240/nkor1241
+chuv1255,Chuvash,Eurasia,55.487,47.163,chuv1255,,NH_chuv1255.tsv,Turkic,turk1311,chuv1255,language,turk1311/bolg1249
+crow1244,Crow,North America,45.368,-107.874,crow1244,,BHR_crow1244.tsv,Siouan,siou1252,crow1244,language,siou1252/core1249/miss1252
+duna1248,Duna,Papunesia,-5.41439,142.475,duna1248,,MD-GR-RSI_duna1248.tsv,,,duna1248,language,
+emai1242,Emai,Africa,7.09089,5.84494,emai1242,,EJ_emai1242.tsv,Atlantic-Congo,atla1278,emai1241,dialect,atla1278/volt1241/benu1247/akpe1249/edoi1239/nort3182/cent2259/emai1243/emai1241
+eton1253,Eton-Mengisa,Africa,4.21045,11.3935,eton1253,,SVM_eton1253.tsv,Atlantic-Congo,atla1278,eton1253,language,atla1278/volt1241/benu1247/bant1294/sout3152/narr1281/bant1295/basa1292/yaun1239
+fuyu1242,Fuyug,Papunesia,-8.6371,147.312,fuyu1242,,ER_fuyu1242.tsv,Goilalan,goil1242,fuyu1242,language,goil1242
+gant1244,Gants,Papunesia,-5.28113,144.771,gant1244,,ML-EJ_gant1244.tsv,Nuclear Trans New Guinea,nucl1709,gant1244,language,nucl1709/mada1298/kala1403/sout3148/soge1235/east2767
+gata1239,Gata',Eurasia,18.6076,82.984,gata1239,,TWI_gata1239.tsv,Austroasiatic,aust1305,gata1239,language,aust1305/mund1335
+gube1234,Gubeeher-Gufangor-Gubelor,Africa,12.56,-17.19,gube1234,,RK_gube1234.tsv,Atlantic-Congo,atla1278,gube1234,language,atla1278/nort3146/wolo1248/east2703/bain1264
+gumu1244,Northern Gumuz,Africa,11.05,35.93,gumu1244,,LR_gumu1244.tsv,Gumuz,gumu1250,gumu1244,language,gumu1250
+guny1241,Gunya,Australia,-27.0642,145.862,guny1241,,CB-PE-AS_guny1241.tsv,Pama-Nyungan,pama1250,guny1241,language,pama1250/grea1282/guwa1245/mari1445/sout2765/marg1252
+gura1251,Gurani,Eurasia,36.8377,44.4956,gura1251,,HH_gura1251.tsv,Indo-European,indo1319,gura1251,language,indo1319/clas1257/indo1320/iran1269/cent2317/cent2318/nort3177/tati1243/gora1267
+hadi1240,Hadiyya,Africa,7.57377,37.7577,hadi1240,,JLE_hadi1240.tsv,Afro-Asiatic,afro1255,hadi1240,language,afro1255/cush1243/east2699/high1285/sida1247/hadi1241/hadi1242
+hava1248,Havasupai-Walapai-Yavapai,North America,35.6302,-113.385,hava1248,,RHE_hava1248.tsv,Cochimi-Yuman,coch1271,hava1248,language,coch1271/yuma1250/gene1244/paii1252
+huam1247,Huambisa,South America,-3.99109,-77.9797,huam1247,,MP_huam1247.tsv,Chicham,jiva1245,huam1247,language,jiva1245/shua1256
+huba1236,Huba,Africa,10.3544,13.139,huba1236,,JN_huba1236.tsv,Afro-Asiatic,afro1255,huba1236,language,afro1255/chad1250/bium1280/nort3156/marg1267/bura1296/bium1270/kilb1234
+huli1244,Huli,Papunesia,-5.97212,142.963,huli1244,,KS_huli1244.tsv,Nuclear Trans New Guinea,nucl1709,huli1244,language,nucl1709/enga1254/kewa1249
+iaai1238,Iaai,Papunesia,-20.6301,166.59,iaai1238,,DP_iaai1238.tsv,Austronesian,aust1307,iaai1238,language,aust1307/mala1545/cent2237/east2712/ocea1241/sout3173/newc1243/loya1239
+iama1237,Iamalele,Papunesia,-9.45005,150.573,iama1237,,JG_iama1237.tsv,Austronesian,aust1307,iama1237,language,aust1307/mala1545/cent2237/east2712/ocea1241/west2818/papu1253/nucl1744/nort2848/bwai1241/iama1238
+inap1243,Modern Iñapari,South America,-12.4653,-69.3083,inap1243,,SD_inap1243.tsv,Arawakan,araw1281,inap1242,dialect,araw1281/sout3131/puru1269/puru1265/inap1242
+jams1239,Jamsay Dogon,Africa,14.1794,-2.57999,jams1239,,LR_jams1239.tsv,Dogon,dogo1299,jams1239,language,dogo1299/plai1257
+kana1288,Kanasi,Papunesia,-10.1658,149.751,kana1288,,MD-GR-RSI_kana1288.tsv,Dagan,daga1274,kana1288,language,daga1274
+kele1255,Kele-Foma,Africa,0.36906,24.3098,kele1255,,JLE_kele1255.tsv,Atlantic-Congo,atla1278,kele1255,language,atla1278/volt1241/benu1247/bant1294/sout3152/narr1281/cent2260/nort3376/inne1246/kele1261/kele1263/kele1265
+khan1278,Khana,Africa,4.70908,7.44363,khan1278,,RHE_khan1278.tsv,Atlantic-Congo,atla1278,khan1278,language,atla1278/volt1241/benu1247/delt1251/ogon1240/east2401/taik1252
+koko1269,Kokota,Papunesia,-8.16481,159.191,koko1269,,NP_koko1269.tsv,Austronesian,aust1307,koko1269,language,aust1307/mala1545/cent2237/east2712/ocea1241/west2818/meso1253/newi1242/stge1234/nort3225/sant1458/cent2063
+kore1283,Koreguaje,South America,0.92316,-75.3475,kore1283,,CB-PE-AS_kore1283.tsv,Tucanoan,tuca1253,kore1283,language,tuca1253/west2784/kore1286
+koro1298,Koromfé,Africa,14.046,-1.96187,koro1298,,SPI-CK_koro1298.tsv,Atlantic-Congo,atla1278,koro1298,language,atla1278/volt1241/nort3149/gura1261/cent2243/nort2777
+kris1246,I'saka,Papunesia,-2.80084,141.303,kris1246,,MD-GR-RSI_kris1246.tsv,Sko,skoo1245,kris1246,language,skoo1245
+lafo1243,Lafofa,Africa,10.3357,30.7331,lafo1243,,RHE_lafo1243.tsv,,,lafo1243,language,
+lakk1252,Lak,Eurasia,42.1328,47.0809,lakk1252,,NH_lakk1252.tsv,Nakh-Daghestanian,nakh1245,lakk1252,language,nakh1245/dagh1238
+lang1320,Langi,Africa,-4.71413,35.9517,lang1320,,AH_lang1320.tsv,Atlantic-Congo,atla1278,lang1320,language,atla1278/volt1241/benu1247/bant1294/sout3152/narr1281/east2731/mbug1243
+lang1324,Lango (Uganda),Africa,2.13867,33.0553,lang1324,,SVM_lang1324.tsv,Nilotic,nilo1247,lang1324,language,nilo1247/west2493/luob1235/sout2831/lang1323
+lele1267,Lelepa,Papunesia,-17.6042,168.202,lele1267,,KS_lele1267.tsv,Austronesian,aust1307,lele1267,language,aust1307/mala1545/cent2237/east2712/ocea1241/nort3195/cent2269/epie1239/efat1236/nort3222
+lemb1266,Lembena,Papunesia,-4.99504,143.891,lemb1266,,TWE-JK_lemb1266.tsv,Nuclear Trans New Guinea,nucl1709,lemb1266,language,nucl1709/enga1254/enga1251
+liji1238,Lijili,Africa,8.52193,8.35562,liji1238,,RK_liji1238.tsv,Atlantic-Congo,atla1278,liji1238,language,atla1278/volt1241/benu1247/benu1248/alum1249/jili1242/jili1243
+mala1479,Colloquial Malay,Eurasia,1.85856,103.0,mala1479,,JLA_mala1479.tsv,Austronesian,aust1307,mala1479,language,aust1307/mala1545/mala1536/nort3170/mala1538/nucl1806/sing1270
+mamb1296,Mambwe-Lungu,Africa,-8.86817,31.2269,mamb1296,,ML_mamb1296.tsv,Atlantic-Congo,atla1278,mamb1296,language,atla1278/volt1241/benu1247/bant1294/sout3152/narr1281/east2731/corr1234/mboz1235/mwik1240/fipa1240/malu1251
+mapo1242,Mapos Buang,Papunesia,-6.86672,146.774,mapo1242,,ED_mapo1242.tsv,Austronesian,aust1307,mapo1242,language,aust1307/mala1545/cent2237/east2712/ocea1241/west2818/nort3206/huon1245/sout2878/buan1245/mapo1247
+mati1250,Matigsalug Manobo,Papunesia,7.72124,125.16,mati1250,,SR_mati1250.tsv,Austronesian,aust1307,mati1250,language,aust1307/mala1545/grea1284/mano1276/cent2255/east2778/east2742/cent2088
+melo1242,Melo,Africa,6.53916,36.811,melo1242,,NH_melo1242.tsv,Ta-Ne-Omotic,gong1255,melo1242,language,gong1255/omet1238/nort3161/cent2046
+misk1235,Mískito,North America,15.1576,-84.2942,misk1235,,RHE_misk1235.tsv,Misumalpan,misu1242,misk1235,language,misu1242
+mpad1242,Mpade,Africa,12.561391,14.446893,mpad1242,,JK-JW_mpad1242.tsv,Afro-Asiatic,afro1255,mpad1242,language,afro1255/chad1250/bium1280/nort3156/koto1267/koto1265/koto1269
+mudu1239,Muduga,Eurasia,11.062,76.5627,mudu1239,,JV_mudu1239.tsv,Dravidian,drav1251,mudu1239,language,drav1251/sout3133/sout3138/tami1291/tami1292/tami1293/tami1294/irul1245/mudu1245
+naxi1245,Naxi,Eurasia,27.5,100.0,naxi1245,,JLA_naxi1245.tsv,Sino-Tibetan,sino1245,naxi1245,language,sino1245/burm1265/naqi1236/naic1235/nais1236
+ngaa1240,Ngaanyatjarra,Australia,-25.7514,127.602,ngaa1240,,CB-PE-AS_ngaa1240.tsv,Pama-Nyungan,pama1250,ngaa1240,language,pama1250/dese1234/wati1241/pint1254/nucl1724/wang1300/tjar1234
+niha1238,Nihali,Eurasia,21.1886,76.3318,niha1238,,TWI_niha1238.tsv,,,niha1238,language,
+nort2885,Northern Subanen,Papunesia,8.5232,123.588,nort2885,,JG_nort2885.tsv,Austronesian,aust1307,nort2885,language,aust1307/mala1545/grea1284/suba1253/nucl1726/east2769
+nucl1240,Mumuye,Africa,8.90347,11.71545,nucl1240,,JLE_nucl1240.tsv,Atlantic-Congo,atla1278,nucl1240,language,atla1278/volt1241/nort3149/came1255/samb1322/mumu1249/mumu1250
+nucl1460,Madurese,Papunesia,-7.0,113.0,nucl1460,,MD-GR-RSI_nucl1460.tsv,Austronesian,aust1307,nucl1460,language,aust1307/mala1545/mala1536/madu1247
+ocea1241,Oceanic,,,,ocea1241,,HS_ocea1241.tsv,Austronesian,aust1307,ocea1241,family,aust1307/mala1545/cent2237/east2712
+ocot1244,Ocotlán Zapotec,North America,16.8258,-96.7263,ocot1244,,RHE_ocot1244.tsv,Otomanguean,otom1299,ocot1244,language,otom1299/east2557/popo1292/zapo1436/zapo1437/nucl1765/core1259/cent2146/west2947/exte1234
+olde1238,Old English (ca. 450-1100),Eurasia,51.06,-1.31,olde1238,,DP-RSC-HW_olde1238.tsv,Indo-European,indo1319,olde1238,language,indo1319/clas1257/germ1287/nort3152/west2793/nort3175/angl1264/angl1265
+para1301,South Wa,Eurasia,22.8658,99.375,para1301,,JC_para1301.tsv,Austroasiatic,aust1305,para1301,language,aust1305/khas1273/pala1352/east2331/waic1245/wala1271/waaa1245
+para1302,Para Naga,Eurasia,26.2072,95.1618,para1302,,JK_para1302.tsv,Sino-Tibetan,sino1245,para1302,language,sino1245/kuki1245/anga1312/aoic1235/yimc1239
+patp1243,Patpatar,Papunesia,-3.74711,152.493,patp1243,,RSC_patp1243.tsv,Austronesian,aust1307,patp1243,language,aust1307/mala1545/cent2237/east2712/ocea1241/west2818/meso1253/newi1242/stge1234/patp1244
+pele1245,Pele-Ata,Papunesia,-5.58045,151.05,pele1245,,MD-GR-RSI_pele1245.tsv,,,pele1245,language,
+puel1244,Puelche,South America,-42.223,-68.666,puel1244,,HH_puel1244.tsv,,,puel1244,language,
+puyu1239,Puyuma,Papunesia,22.643,120.996,puyu1239,,MD-GR-RSI_puyu1239.tsv,Austronesian,aust1307,puyu1239,language,aust1307
+quap1242,Quapaw,North America,36.9471,-94.6634,quap1242,,BHR_quap1242.tsv,Siouan,siou1252,quap1242,language,siou1252/core1249/miss1254/dheg1241
+reja1241,Rejang Kayan,Papunesia,2.71903,114.169,reja1241,,MM_reja1241.tsv,Austronesian,aust1307,reja1241,language,aust1307/mala1545/nort3253/kaya1335/kaya1336/kaya1333/reja1244
+rikb1245,Rikbaktsa,South America,-11.1887,-58.1942,rikb1245,,RHE_rikb1245.tsv,Nuclear-Macro-Je,nucl1710,rikb1245,language,nucl1710
+saki1248,Mekens,South America,-13.054,-62.0927,saki1248,,RHE_saki1248.tsv,Tupian,tupi1275,saki1248,language,tupi1275/tupa1251/nucl1716/akun1243
+sanm1301,San Marcos Tlalcoyalco Popoloca,North America,18.74,-97.5936,sanm1301,,RHE_sanm1301.tsv,Otomanguean,otom1299,sanm1301,language,otom1299/east2557/popo1292/popo1293/ixca1247/choc1278/popo1294/nort3348
+sant1451,Santa María Quiegolani Zapotec,North America,16.033,-96.0486,sant1451,,JG_sant1451.tsv,Otomanguean,otom1299,sant1451,language,otom1299/east2557/popo1292/zapo1436/zapo1437/nucl1765/core1259/cent2146/sout3003
+sara1331,Saraveca,South America,-16.07,-57.8,sara1331,,SD_sara1331.tsv,Arawakan,araw1281,sara1331,language,araw1281/cent2226/pare1273
+sata1237,Satawalese,Papunesia,7.36084,147.038,sata1237,,NP_sata1237.tsv,Austronesian,aust1307,sata1237,language,aust1307/mala1545/cent2237/east2712/ocea1241/micr1243/micr1244/cent2276/west2844/pona1247/truk1243/nucl1749/cent2290/sata1238
+seri1257,Seri,North America,28.9877,-112.384,seri1257,,RHE_seri1257.tsv,,,seri1257,language,
+sher1257,Sherdukpen,Eurasia,27.0035,92.5799,sher1257,,JK_sher1257.tsv,Sino-Tibetan,sino1245,sher1257,language,sino1245/khob1235/meyi1234/sher1256
+sout2649,Southern Pashto,Eurasia,37.17,68.25,sout2649,,VG_sout2649.tsv,Indo-European,indo1319,sout2649,language,indo1319/clas1257/indo1320/iran1269/pash1269/nucl1276
+sout2729,Southern Pumi,Eurasia,27.8408,100.622,sout2729,,ML_sout2729.tsv,Sino-Tibetan,sino1245,sout2729,language,sino1245/burm1265/naqi1236/qian1263/pumi1242
+sout2856,South Efate,Papunesia,-17.7006,168.377,sout2856,,JLA_sout2856.tsv,Austronesian,aust1307,sout2856,language,aust1307/mala1545/cent2237/east2712/ocea1241/nort3195/cent2269/epie1239/efat1236/sout3196
+sout2869,Southwest Tanna,Papunesia,-19.57953,169.35603,sout2869,,JW_sout2869.tsv,Austronesian,aust1307,sout2869,language,aust1307/mala1545/cent2237/east2712/ocea1241/sout3173/sout2868/tann1242/sout3195
+taha1241,Tahaggart Tamahaq,Africa,22.5908,8.73169,taha1241,,NP_taha1241.tsv,Afro-Asiatic,afro1255,taha1241,language,afro1255/berb1260/tuar1240
+tali1259,Talise,Papunesia,-9.76764,160.231,tali1259,,NP_tali1259.tsv,Austronesian,aust1307,tali1259,language,aust1307/mala1545/cent2237/east2712/ocea1241/sout2853/guad1241/sout2854
+tezo1238,Tezoatlán Mixtec,North America,17.6155,-97.9002,tezo1238,,RHE_tezo1238.tsv,Otomanguean,otom1299,tezo1238,language,otom1299/east2557/amuz1253/mixt1422/mixt1423/mixt1427
+than1259,Thangmi,Eurasia,28.7554,85.7657,than1259,,JK-EJ_than1259.tsv,Sino-Tibetan,sino1245,than1259,language,sino1245/hima1249/maha1306/newa1245/than1258
+thir1234,Third Mesa,North America,35.7653,-110.535,thir1234,,RSC_thir1234.tsv,Uto-Aztecan,utoa1244,hopi1249,dialect,utoa1244/nort2953/hopi1249
+toke1240,Tokelau,Papunesia,-9.227642,-171.780833,toke1240,,SY_toke1240.tsv,Austronesian,aust1307,toke1240,language,aust1307/mala1545/cent2237/east2712/ocea1241/cent2060/east2445/poly1242/nucl1485/elli1239/samo1310
+tsou1248,Tsou,Papunesia,23.216,120.787,tsou1248,,MD-GR-RSI_tsou1248.tsv,Austronesian,aust1307,tsou1248,language,aust1307/tsou1250
+tung1290,Tungag,Papunesia,-2.52188,150.198,tung1290,,NP_tung1290.tsv,Austronesian,aust1307,tung1290,language,aust1307/mala1545/cent2237/east2712/ocea1241/west2818/meso1253/newi1242/tung1294
+wari1268,Wari',South America,-10.69948,-64.56152,wari1268,,JLA_wari1268.tsv,Chapacuran,chap1271,wari1268,language,chap1271/more1263/wari1269/wanh1234/wari1267
+west2386,Western Panjabi,Eurasia,30.0948,75.3474,west2386,,JG_west2386.tsv,Indo-European,indo1319,west2386,language,indo1319/clas1257/indo1320/indo1321/indo1324/sind1278/lahn1241
+west2417,Western Muya,Eurasia,29.444,101.418,west2417,,JLA_west2417.tsv,Sino-Tibetan,sino1245,west2417,language,sino1245/burm1265/naqi1236/qian1263/muya1239
+woli1241,Wolio,Papunesia,-5.33,122.67,woli1241,,ED_woli1241.tsv,Austronesian,aust1307,woli1241,language,aust1307/mala1545/cele1242/kail1255/wotu1239/isla1281/woli1240
+yong1280,Yonggom,Papunesia,-6.42956,141.213,yong1280,,JLA_yong1280.tsv,Nuclear Trans New Guinea,nucl1709,yong1280,language,nucl1709/cent2116/awyu1265/okok1235/okkk1242/lowl1259
+zaca1241,Zacatlán-Ahuacatlán-Tepetzintla Nahuatl,North America,20.0581,-97.8974,zaca1241,,RHE_zaca1241.tsv,Uto-Aztecan,utoa1244,zaca1241,language,utoa1244/sout3136/cora1261/azte1234/east2720/tehu1243/tehu1244
+zigu1244,Zigula-Mushungulu,Africa,-5.61864,38.41138,zigu1244,,JK_zigu1244.tsv,Atlantic-Congo,atla1278,zigu1244,language,atla1278/volt1241/benu1247/bant1294/sout3152/narr1281/east2731/nort3203/nort3209/ruvu1235/west2846/seut1234/zigu1243

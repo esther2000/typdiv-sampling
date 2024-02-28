@@ -8,8 +8,9 @@ import argparse
 import pandas as pd
 import math
 from pathlib import Path
+from typdiv.measures import entropy
 
-SCRIPT_WD = Path(__file__).resolve().parent
+CWD = Path(__file__).parent
 
 
 def create_arg_parser():
@@ -17,32 +18,18 @@ def create_arg_parser():
     parser.add_argument(
         "-s",
         "--sample",
-        type=str,
-        default=SCRIPT_WD / "samples/random_genus-langs_gb-10-gb_vec_sim_0-123.txt",
+        type=Path,
+        default=CWD / "samples/random_genus-langs_gb-10-gb_vec_sim_0-123.txt",
         help="File with languages to select from, one language code per line.",
     )
     parser.add_argument(
         "-gb",
         "--grambank",
-        type=str,
-        default=SCRIPT_WD.parent / "data/gb_lang_feat_vals.csv",
+        type=Path,
+        default=CWD.parent / "data/gb_lang_feat_vals.csv",
         help="Path to Grambank feature csv.",
     )
     return parser.parse_args()
-
-
-def entropy(string):
-    """Calculates the Shannon entropy of a string
-    from: https://stackoverflow.com/questions/67059620/calculate-entropy-from-binary-bit-string
-    """
-
-    # get probability of chars in string
-    prob = [float(string.count(c)) / len(string) for c in set(list(string))]
-
-    # calculate the entropy
-    entropy = -sum([p * math.log(p) / math.log(2.0) for p in prob])
-
-    return entropy
 
 
 def main():
