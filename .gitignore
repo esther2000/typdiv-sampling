@@ -153,3 +153,6 @@ dmypy.json
 cython_debug/
 
 *.pdf
+
+# 100mb file
+data/gb_vec_sim_0.csv
