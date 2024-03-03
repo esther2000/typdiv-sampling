@@ -23,7 +23,7 @@ def create_arg_parser():
         "--sampling_method",
         nargs="+",
         type=str,
-        default="typ_mdp",
+        default=["mdp"],
         help=f"Sampling method(s), choose from: {','.join(METHODS)}.",
     )
     parser.add_argument(
