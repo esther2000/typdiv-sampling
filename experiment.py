@@ -60,14 +60,19 @@ def create_arg_parser():
     return parser.parse_args()
 
 
-def evaluate_sample(sample):
-    ents = [entropy_by_lang_filtered[lang] for lang in sample]
-    return sum(ents) / len(ents)
+class Evaluator:
+    def __init__(self, entropy_by_lang: dict[str, float]) -> None:
+        # This class is not really necessary, but it makes caching the entropy
+        # scores easier.
+        self.entropy_by_lang = entropy_by_lang
 
+    def evaluate_sample(self, sample):
+        ents = [self.entropy_by_lang[lang] for lang in sample]
+        return sum(ents) / len(ents)
 
-def rand_runs(runs, func, N, k):
-    scores = [evaluate_sample(func(N, k, run + k)) for run in range(runs)]
-    return sum(scores) / runs
+    def rand_runs(self, runs, func, N, k):
+        scores = [self.evaluate_sample(func(N, k, run + k)) for run in range(runs)]
+        return sum(scores) / runs
 
 
 def main():
@@ -81,21 +86,19 @@ def main():
 
     gb = pd.read_csv(args.gb_features_path, index_col="Lang_ID")
     gb = gb.drop(["Unnamed: 0"], axis=1)
-
     gb_by_lang = {lang_id: np.array(row) for lang_id, row in gb.iterrows()}
-
     # pre compute entropy for all languages since it will not change
-    global entropy_by_lang_filtered  # yeah yeah I know
     entropy_by_lang_filtered = {
         # TODO: what to do about missing values
         # here we filter out ? and no_cov to calc entropy
         k: entropy("".join(str(int(x)) for x in v if x not in ["?", "no_cov"]))
         for k, v in gb_by_lang.items()
     }
+    evaluator = Evaluator(entropy_by_lang_filtered)
 
     # TODO: put this in args and allow for other frames, distances and evaluation metrics
     RUNS = 10  # n runs to get an average for the random methods with a different seed per run
-    RANGE = range(5, 505, 5)
+    RANGE = range(5, 15, 5)
     N = sorted(gb_by_lang.keys())  # our frame here is all languages in grambank
     records = []
 
@@ -107,15 +110,15 @@ def main():
             futures[ex.submit(sampler.sample_mdp, N, k)] = ("mdp", k)
             futures[ex.submit(sampler.sample_mmdp, N, k)] = ("mmdp", k)
 
-            futures[ex.submit(rand_runs, RUNS, sampler.sample_random, N, k)] = ("random", k)
-            futures[ex.submit(rand_runs, RUNS, sampler.sample_random_family, N, k)] = ("random_family", k)
-            futures[ex.submit(rand_runs, RUNS, sampler.sample_random_genus, N, k)] = ("random_genus", k)
+            futures[ex.submit(evaluator.rand_runs, RUNS, sampler.sample_random, N, k)] = ("random", k)
+            futures[ex.submit(evaluator.rand_runs, RUNS, sampler.sample_random_family, N, k)] = ("random_family", k)
+            futures[ex.submit(evaluator.rand_runs, RUNS, sampler.sample_random_genus, N, k)] = ("random_genus", k)
 
         for res in tqdm(concurrent.futures.as_completed(futures.keys()), desc="Processing", total=len(futures)):
             method, k = futures[res]
             # here we have the samples, not yet evaluated
             if method in ["mdp", "mmdp"]:
-                records.append({"method": method, "entropy": evaluate_sample(res.result()), "k": k})
+                records.append({"method": method, "entropy": evaluator.evaluate_sample(res.result()), "k": k})
             # and here the average of the random runs
             else:
                 records.append({"method": method, "entropy": res.result(), "k": k})
