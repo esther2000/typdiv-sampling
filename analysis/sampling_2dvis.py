@@ -86,47 +86,6 @@ def sample_mmdp(max_langs, dist_mtx):
     return list(S)
 
 
-def sample_random_family(languages, max_langs):
-    """
-    Sample k languages from N where we sample from
-    language families as uniformly as the data allows.
-    """
-    g_df = pd.read_csv("sources/grambank-v1.0.3/cldf/languages.csv")
-    g_df = g_df[g_df["Glottocode"].isin(languages)]
-    # Sample one language from each family
-    codes = (
-        g_df.groupby("Family_name")
-        .apply(lambda x: x.sample(1, random_state=RAND_SEED))
-        .reset_index(drop=True)["Glottocode"]
-    )
-
-    # We're lucky, n_families is the same as the number of langs we're looking for
-    if len(codes) == max_langs:
-        return codes
-
-    # We have more families than we need, sample what we need
-    if len(codes) > max_langs:
-        return random.sample(codes.tolist(), max_langs)
-
-    # Figure out how many to get from the families (as even per lang as possible)
-    n_families = len(g_df["Family_name"].unique())
-    s_size = max_langs // n_families
-    codes = (
-        g_df.groupby("Family_name")
-        .apply(lambda x: x.sample(s_size, random_state=RAND_SEED))
-        .reset_index(drop=True)["Glottocode"]
-        .tolist()
-    )
-    # Fill up the remaining langs by random selection from all families
-    while len(codes) < max_langs:
-        new_sample = g_df[~(g_df["Glottocode"].isin(codes))].sample(
-            1, random_state=RAND_SEED
-        )
-        codes.append(new_sample["Glottocode"].values[0])
-
-    return codes
-
-
 def main():
 
     args = create_arg_parser()
