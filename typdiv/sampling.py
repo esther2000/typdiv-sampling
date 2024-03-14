@@ -2,8 +2,10 @@ import pandas as pd
 import random
 from typdiv.typ_dist import get_summed_dist_dict, get_first_point
 from pathlib import Path
+from typing import Callable
 
 Language = str
+SamplingFunc = Callable[[list[Language], int, int], list[Language]]
 METHODS = ["random", "random_family", "random_genus", "mdp", "mmdp"]
 
 
