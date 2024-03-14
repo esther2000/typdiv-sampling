@@ -1,5 +1,5 @@
 import argparse
-from typdiv.sampling import Sampler, METHODS
+from typdiv.sampling import Sampler, Language, SamplingFunc
 from pathlib import Path
 import numpy as np
 import warnings
@@ -7,7 +7,6 @@ import pandas as pd
 from typdiv.measures import entropy
 import concurrent.futures
 from tqdm import tqdm
-
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -57,22 +56,71 @@ def create_arg_parser():
         help="Number of cpu cores to use.",
     )
 
+    parser.add_argument(
+        "-rand_runs",
+        type=int,
+        default=10,
+        help="Number of runs per k for random methods.",
+    )
+    parser.add_argument(
+        "-s",
+        type=int,
+        default=5,
+        help="Start of the range of ks to test.",
+    )
+    parser.add_argument(
+        "-e",
+        type=int,
+        default=500,
+        help="End of the range of ks to test (inclusive).",
+    )
+    parser.add_argument(
+        "-st",
+        type=int,
+        default=5,
+        help="Step size for the range of ks to test.",
+    )
     return parser.parse_args()
 
 
 class Evaluator:
-    def __init__(self, entropy_by_lang: dict[str, float]) -> None:
-        # This class is not really necessary, but it makes caching the entropy
-        # scores easier.
-        self.entropy_by_lang = entropy_by_lang
+    def __init__(self, gb_by_lang: dict[Language, list[str]]) -> None:
+        self.gb_by_lang = gb_by_lang
+        self.n_features = len(gb_by_lang[list(gb_by_lang.keys())[0]])
+        self.cache: dict[str, tuple[float, float]] = dict()
 
-    def evaluate_sample(self, sample):
-        ents = [self.entropy_by_lang[lang] for lang in sample]
-        return sum(ents) / len(ents)
+    def evaluate_sample(self, sample: list[Language]) -> tuple[float, float]:
+        if (sample_key := "".join(sorted(sample))) and sample_key in self.cache:
+            return self.cache[sample_key]
 
-    def rand_runs(self, runs, func, N, k):
+        ents_with_missing, ents_without_missing = [], []
+        for i in range(self.n_features):
+            vals_with_missing, vals_without_missing = [], []
+            for lang in sample:
+                fv = self.gb_by_lang[lang][i]
+                vals_with_missing.append(fv)
+                if fv != "?":
+                    vals_without_missing.append(fv)
+            ents_with_missing.append(entropy("".join(vals_with_missing)))
+            ents_without_missing.append(entropy("".join(vals_without_missing)))
+
+        avg_ent_with = sum(ents_with_missing) / len(ents_with_missing)
+        avg_ent_without = sum(ents_without_missing) / len(ents_without_missing)
+
+        result = (avg_ent_with, avg_ent_without)
+
+        self.cache[sample_key] = result
+
+        return result
+
+    def rand_runs(self, runs: int, func: SamplingFunc, N: list[Language], k: int) -> tuple[float, float]:
         scores = [self.evaluate_sample(func(N, k, run + k)) for run in range(runs)]
-        return sum(scores) / runs
+        with_score = sum(i[0] for i in scores) / runs
+        without_score = sum(i[1] for i in scores) / runs
+
+        result = (with_score, without_score)
+
+        return result
 
 
 def main():
@@ -86,20 +134,18 @@ def main():
 
     gb = pd.read_csv(args.gb_features_path, index_col="Lang_ID")
     gb = gb.drop(["Unnamed: 0"], axis=1)
-    gb_by_lang = {lang_id: np.array(row) for lang_id, row in gb.iterrows()}
-    # pre compute entropy for all languages since it will not change
-    entropy_by_lang_filtered = {
-        # TODO: what to do about missing values
-        # here we filter out ? and no_cov to calc entropy
-        k: entropy("".join(str(int(x)) for x in v if x not in ["?", "no_cov"]))
-        for k, v in gb_by_lang.items()
-    }
-    evaluator = Evaluator(entropy_by_lang_filtered)
+    # no_cov introduces a lot of unneeded entropy and both 'missing' values
+    # have the same meaning (roughly) for our purposes
+    gb.replace(to_replace="no_cov", value="?", inplace=True)
 
-    # TODO: put this in args and allow for other frames, distances and evaluation metrics
-    RUNS = 10  # n runs to get an average for the random methods with a different seed per run
-    RANGE = range(5, 15, 5)
-    N = sorted(gb_by_lang.keys())  # our frame here is all languages in grambank
+    gb_by_lang = {i: np.array(row) for i, row in gb.iterrows()}
+    evaluator = Evaluator(gb_by_lang)
+
+    RUNS = args.rand_runs  # n runs to get an average for the random methods with a different seed per run
+    RANGE = range(args.s, args.e + 1, args.st)
+    N = sorted(gb.index.unique())  # our frame here is all languages in grambank TODO: get this from args
+    del gb
+
     records = []
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=args.n_cpu) as ex:
@@ -107,8 +153,8 @@ def main():
         futures = {}
         for k in RANGE:
             # these are deterministic, so no need for runs or seeds
-            futures[ex.submit(sampler.sample_mdp, N, k)] = ("mdp", k)
-            futures[ex.submit(sampler.sample_mmdp, N, k)] = ("mmdp", k)
+            futures[ex.submit(evaluator.rand_runs, 1, sampler.sample_mdp, N, k)] = ("mdp", k)
+            futures[ex.submit(evaluator.rand_runs, 1, sampler.sample_mmdp, N, k)] = ("mmdp", k)
 
             futures[ex.submit(evaluator.rand_runs, RUNS, sampler.sample_random, N, k)] = ("random", k)
             futures[ex.submit(evaluator.rand_runs, RUNS, sampler.sample_random_family, N, k)] = ("random_family", k)
@@ -116,12 +162,10 @@ def main():
 
         for res in tqdm(concurrent.futures.as_completed(futures.keys()), desc="Processing", total=len(futures)):
             method, k = futures[res]
-            # here we have the samples, not yet evaluated
-            if method in ["mdp", "mmdp"]:
-                records.append({"method": method, "entropy": evaluator.evaluate_sample(res.result()), "k": k})
-            # and here the average of the random runs
-            else:
-                records.append({"method": method, "entropy": res.result(), "k": k})
+            ent_with, ent_without = res.result()
+            records.append(
+                {"method": method, "entropy_with_missing": ent_with, "entropy_without_missing": ent_without, "k": k}
+            )
 
     pd.DataFrame().from_records(records).to_csv(args.results_path, index=False)
 
