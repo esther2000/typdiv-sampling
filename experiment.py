@@ -55,7 +55,6 @@ def create_arg_parser():
         default=8,
         help="Number of cpu cores to use.",
     )
-
     parser.add_argument(
         "-rand_runs",
         type=int,
@@ -79,6 +78,12 @@ def create_arg_parser():
         type=int,
         default=5,
         help="Step size for the range of ks to test.",
+    )
+    parser.add_argument(
+        "-counts_path",
+        type=Path,
+        default= DATA / "convenience_counts.json",
+        help="File with language counts from previous work.",
     )
     return parser.parse_args()
 
@@ -130,6 +135,7 @@ def main():
         dist_path=args.dist_path,
         gb_path=args.gb_path,
         wals_path=args.wals_path,
+        counts_path=args.counts_path
     )
 
     gb = pd.read_csv(args.gb_features_path, index_col="Lang_ID")
@@ -159,6 +165,7 @@ def main():
             futures[ex.submit(evaluator.rand_runs, RUNS, sampler.sample_random, N, k)] = ("random", k)
             futures[ex.submit(evaluator.rand_runs, RUNS, sampler.sample_random_family, N, k)] = ("random_family", k)
             futures[ex.submit(evaluator.rand_runs, RUNS, sampler.sample_random_genus, N, k)] = ("random_genus", k)
+            futures[ex.submit(evaluator.rand_runs, RUNS, sampler.sample_convenience, N, k)] = ("convenience", k)
 
         for res in tqdm(concurrent.futures.as_completed(futures.keys()), desc="Processing", total=len(futures)):
             method, k = futures[res]
