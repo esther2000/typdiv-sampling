@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 import warnings
 import pandas as pd
-from typdiv.measures import entropy
+from typdiv.measures import entropy, fvi
 import concurrent.futures
 from tqdm import tqdm
 
@@ -92,13 +92,13 @@ class Evaluator:
     def __init__(self, gb_by_lang: dict[Language, list[str]]) -> None:
         self.gb_by_lang = gb_by_lang
         self.n_features = len(gb_by_lang[list(gb_by_lang.keys())[0]])
-        self.cache: dict[str, tuple[float, float]] = dict()
+        self.cache: dict[str, tuple[float, float, float]] = dict()
 
-    def evaluate_sample(self, sample: list[Language]) -> tuple[float, float]:
+    def evaluate_sample(self, sample: list[Language]) -> tuple[float, float, float]:
         if (sample_key := "".join(sorted(sample))) and sample_key in self.cache:
             return self.cache[sample_key]
 
-        ents_with_missing, ents_without_missing = [], []
+        ents_with_missing, ents_without_missing, fvis = [], [], []
         for i in range(self.n_features):
             vals_with_missing, vals_without_missing = [], []
             for lang in sample:
@@ -108,22 +108,25 @@ class Evaluator:
                     vals_without_missing.append(fv)
             ents_with_missing.append(entropy("".join(vals_with_missing)))
             ents_without_missing.append(entropy("".join(vals_without_missing)))
+            fvis.append(fvi("".join(vals_without_missing)))
 
         avg_ent_with = sum(ents_with_missing) / len(ents_with_missing)
         avg_ent_without = sum(ents_without_missing) / len(ents_without_missing)
+        avg_fvi = sum(fvis) / len(fvis)
 
-        result = (avg_ent_with, avg_ent_without)
+        result = (avg_ent_with, avg_ent_without, avg_fvi)
 
         self.cache[sample_key] = result
 
         return result
 
-    def rand_runs(self, runs: int, func: SamplingFunc, N: list[Language], k: int) -> tuple[float, float]:
+    def rand_runs(self, runs: int, func: SamplingFunc, N: list[Language], k: int) -> tuple[float, float, float]:
         scores = [self.evaluate_sample(func(N, k, run + k)) for run in range(runs)]
-        with_score = sum(i[0] for i in scores) / runs
-        without_score = sum(i[1] for i in scores) / runs
+        ent_score_with = sum(i[0] for i in scores) / runs
+        ent_score_without = sum(i[1] for i in scores) / runs
+        fvi_score = sum(i[2] for i in scores) / runs
 
-        result = (with_score, without_score)
+        result = (ent_score_with, ent_score_without, fvi_score)
 
         return result
 
@@ -169,9 +172,10 @@ def main():
 
         for res in tqdm(concurrent.futures.as_completed(futures.keys()), desc="Processing", total=len(futures)):
             method, k = futures[res]
-            ent_with, ent_without = res.result()
+            ent_with, ent_without, fv_incl = res.result()
             records.append(
-                {"method": method, "entropy_with_missing": ent_with, "entropy_without_missing": ent_without, "k": k}
+                {"method": method, "entropy_with_missing": ent_with,
+                 "entropy_without_missing": ent_without, "fvi": fv_incl, "k": k}
             )
 
     pd.DataFrame().from_records(records).to_csv(args.results_path, index=False)
