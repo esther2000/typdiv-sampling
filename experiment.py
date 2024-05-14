@@ -40,7 +40,7 @@ def create_arg_parser():
     parser.add_argument(
         "-gb_features_path",
         type=Path,
-        default=DATA / "gb_lang_feat_vals.csv",
+        default=DATA / "gb_binarized.csv",
         help="File with Grambank features.",
     )
     parser.add_argument(
@@ -152,7 +152,8 @@ def main():
     )
 
     gb = pd.read_csv(args.gb_features_path, index_col="Lang_ID")
-    gb = gb.drop(["Unnamed: 0"], axis=1)
+    gb = gb.drop(["Unnamed: 0", "Unnamed: 0.1"], axis=1)
+
     # no_cov introduces a lot of unneeded entropy and both 'missing' values
     # have the same meaning (roughly) for our purposes
     gb.replace(to_replace="no_cov", value="?", inplace=True)

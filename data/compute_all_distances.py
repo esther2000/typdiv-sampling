@@ -53,6 +53,7 @@ def main():
     # Optional: binarize multi-value features
     if args.binarize:
         gb_matrix, gb_feats = binarize(gb_matrix, mv_feats)
+        gb_matrix.to_csv('gb_binarized.csv')
 
     # Make vector per language
     lang_vecs = {row["Lang_ID"]: row[[x for x in gb_feats]].to_list() for _, row in gb_matrix.iterrows()}
