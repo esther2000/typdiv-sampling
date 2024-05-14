@@ -29,3 +29,24 @@ def mpd(pairs: list, distances: dict) -> float:
         mpds.append(distances[pair[0]][pair[1]])
 
     return sum(mpds) / len(mpds)
+
+
+def fvo(pairs: list, feats: dict) -> float:
+    """
+    Calculate fraction of feature value overlap per language pair in sample
+    """
+    fracs = []
+    for pair in pairs:
+        same, total = 0, 0
+        l1_feats, l2_feats = feats[pair[0]], feats[pair[1]]
+        for f1, f2 in zip(l1_feats, l2_feats):
+            if f1 != "?" and f2 != "?":
+                if f1 == f2:
+                    same += 1
+                total += 1
+            try:
+                fracs.append(same/total)
+            except ZeroDivisionError:
+                pass  # TODO: or append 0?
+
+    return sum(fracs) / len(fracs)

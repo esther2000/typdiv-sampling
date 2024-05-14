@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 import warnings
 import pandas as pd
-from typdiv.measures import entropy, fvi, mpd
+from typdiv.measures import entropy, fvi, mpd, fvo
 import concurrent.futures
 from tqdm import tqdm
 from itertools import combinations
@@ -93,16 +93,17 @@ class Evaluator:
     def __init__(self, gb_by_lang: dict[Language, list[str]], distances) -> None:
         self.gb_by_lang = gb_by_lang
         self.n_features = len(gb_by_lang[list(gb_by_lang.keys())[0]])
-        self.cache: dict[str, tuple[float, float, float, float]] = dict()
+        self.cache: dict[str, tuple[float, float, float, float, float]] = dict()
         self.distances = distances
 
-    def evaluate_sample(self, sample: list[Language]) -> tuple[float, float, float, float]:
+    def evaluate_sample(self, sample: list[Language]) -> tuple[float, float, float, float, float]:
         if (sample_key := "".join(sorted(sample))) and sample_key in self.cache:
             return self.cache[sample_key]
 
         # Language-based methods: MPD, FVO
         pairs = [p for p in combinations(sample, 2)]
         mpd_score = mpd(pairs, self.distances)
+        fvo_score = fvo(pairs, self.gb_by_lang)
 
         # Feature-based methods: Entropy, FVI
         ents_with_missing, ents_without_missing, fvis = [], [], []
@@ -121,7 +122,7 @@ class Evaluator:
         avg_ent_without = sum(ents_without_missing) / len(ents_without_missing)
         avg_fvi = sum(fvis) / len(fvis)
 
-        result = (avg_ent_with, avg_ent_without, avg_fvi, mpd_score)
+        result = (avg_ent_with, avg_ent_without, avg_fvi, mpd_score, fvo_score)
 
         self.cache[sample_key] = result
 
@@ -133,8 +134,9 @@ class Evaluator:
         ent_score_without = sum(i[1] for i in scores) / runs
         fvi_score = sum(i[2] for i in scores) / runs
         mpd_score = sum(i[3] for i in scores) / runs
+        fvo_score = sum(i[4] for i in scores) / runs
 
-        result = (ent_score_with, ent_score_without, fvi_score, mpd_score)
+        result = (ent_score_with, ent_score_without, fvi_score, mpd_score, fvo_score)
 
         return result
 
@@ -183,10 +185,10 @@ def main():
 
         for res in tqdm(concurrent.futures.as_completed(futures.keys()), desc="Processing", total=len(futures)):
             method, k = futures[res]
-            ent_with, ent_without, fv_incl, mpd = res.result()
+            ent_with, ent_without, fv_incl, mpd_s, fvo_s = res.result()
             records.append(
-                {"method": method, "entropy_with_missing": ent_with,
-                 "entropy_without_missing": ent_without, "fvi": fv_incl, "mpd": mpd, "k": k}
+                {"method": method, "entropy_with_missing": ent_with, "entropy_without_missing": ent_without,
+                 "fvi": fv_incl, "mpd": mpd_s, "fvo": fvo_s, "k": k}
             )
 
     pd.DataFrame().from_records(records).to_csv(args.results_path, index=False)
