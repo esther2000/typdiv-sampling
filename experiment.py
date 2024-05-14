@@ -4,9 +4,10 @@ from pathlib import Path
 import numpy as np
 import warnings
 import pandas as pd
-from typdiv.measures import entropy, fvi
+from typdiv.measures import entropy, fvi, mpd
 import concurrent.futures
 from tqdm import tqdm
+from itertools import combinations
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -21,7 +22,7 @@ def create_arg_parser():
         "-d",
         "--dist_path",
         type=Path,
-        default=DATA / "gb_vec_sim_0.csv",
+        default=DATA / "gb_sim_bin_1.csv",  #"gb_vec_sim_0.csv",
         help="File with pairwise language distances.",
     )
     parser.add_argument(
@@ -89,15 +90,21 @@ def create_arg_parser():
 
 
 class Evaluator:
-    def __init__(self, gb_by_lang: dict[Language, list[str]]) -> None:
+    def __init__(self, gb_by_lang: dict[Language, list[str]], distances) -> None:
         self.gb_by_lang = gb_by_lang
         self.n_features = len(gb_by_lang[list(gb_by_lang.keys())[0]])
-        self.cache: dict[str, tuple[float, float, float]] = dict()
+        self.cache: dict[str, tuple[float, float, float, float]] = dict()
+        self.distances = distances
 
-    def evaluate_sample(self, sample: list[Language]) -> tuple[float, float, float]:
+    def evaluate_sample(self, sample: list[Language]) -> tuple[float, float, float, float]:
         if (sample_key := "".join(sorted(sample))) and sample_key in self.cache:
             return self.cache[sample_key]
 
+        # Language-based methods: MPD, FVO
+        pairs = [p for p in combinations(sample, 2)]
+        mpd_score = mpd(pairs, self.distances)
+
+        # Feature-based methods: Entropy, FVI
         ents_with_missing, ents_without_missing, fvis = [], [], []
         for i in range(self.n_features):
             vals_with_missing, vals_without_missing = [], []
@@ -114,19 +121,20 @@ class Evaluator:
         avg_ent_without = sum(ents_without_missing) / len(ents_without_missing)
         avg_fvi = sum(fvis) / len(fvis)
 
-        result = (avg_ent_with, avg_ent_without, avg_fvi)
+        result = (avg_ent_with, avg_ent_without, avg_fvi, mpd_score)
 
         self.cache[sample_key] = result
 
         return result
 
-    def rand_runs(self, runs: int, func: SamplingFunc, N: list[Language], k: int) -> tuple[float, float, float]:
+    def rand_runs(self, runs: int, func: SamplingFunc, N: list[Language], k: int) -> tuple[float, float, float, float]:
         scores = [self.evaluate_sample(func(N, k, run + k)) for run in range(runs)]
         ent_score_with = sum(i[0] for i in scores) / runs
         ent_score_without = sum(i[1] for i in scores) / runs
         fvi_score = sum(i[2] for i in scores) / runs
+        mpd_score = sum(i[3] for i in scores) / runs
 
-        result = (ent_score_with, ent_score_without, fvi_score)
+        result = (ent_score_with, ent_score_without, fvi_score, mpd_score)
 
         return result
 
@@ -146,9 +154,12 @@ def main():
     # no_cov introduces a lot of unneeded entropy and both 'missing' values
     # have the same meaning (roughly) for our purposes
     gb.replace(to_replace="no_cov", value="?", inplace=True)
-
     gb_by_lang = {i: np.array(row) for i, row in gb.iterrows()}
-    evaluator = Evaluator(gb_by_lang)
+
+    dist_df = pd.read_csv(args.dist_path).set_index('Unnamed: 0')
+    dist_dict = dist_df.to_dict('dict')  # TODO: this contains double info
+
+    evaluator = Evaluator(gb_by_lang, dist_dict)
 
     RUNS = args.rand_runs  # n runs to get an average for the random methods with a different seed per run
     RANGE = range(args.s, args.e + 1, args.st)
@@ -172,10 +183,10 @@ def main():
 
         for res in tqdm(concurrent.futures.as_completed(futures.keys()), desc="Processing", total=len(futures)):
             method, k = futures[res]
-            ent_with, ent_without, fv_incl = res.result()
+            ent_with, ent_without, fv_incl, mpd = res.result()
             records.append(
                 {"method": method, "entropy_with_missing": ent_with,
-                 "entropy_without_missing": ent_without, "fvi": fv_incl, "k": k}
+                 "entropy_without_missing": ent_without, "fvi": fv_incl, "mpd": mpd, "k": k}
             )
 
     pd.DataFrame().from_records(records).to_csv(args.results_path, index=False)
