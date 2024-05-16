@@ -7,12 +7,12 @@ import json
 
 Language = str
 SamplingFunc = Callable[[list[Language], int, int], list[Language]]
-METHODS = ["random", "random_family", "random_genus", "mdp", "mmdp"]
+METHODS = ["random", "random_family", "random_genus", "mdp", "mmdp", "convenience"]
 
 
 class Sampler:
     def __init__(self, dist_path: Path, gb_path: Path, wals_path: Path, counts_path: Path) -> None:
-        for p in [dist_path, gb_path, wals_path]:
+        for p in [dist_path, gb_path, wals_path, counts_path]:
             if not p.exists():
                 raise FileNotFoundError(f"Cannot find {p}")
 
@@ -97,8 +97,11 @@ class Sampler:
         TODO: this can be max 195 --> change experiments to less than 500? or just lower number for this baseline?
         TODO: implement random selection in case of frequency tie
         """
-        count_dict = self.counts
-        return [lang for lang, _ in count_dict[:k]]
+        # filter so we're using only those language that are in our frame
+        counts = [(lang, lang_count) for lang, lang_count in self.counts if lang in frame]
+        if len(counts) < k:
+            raise ValueError(f"The {len(counts)} languages in the convenience list are not enough to sample {k=}.")
+        return [lang for lang, _ in counts[:k]]
 
     def _df_sample(self, df: pd.DataFrame, key: str, k: int, random_seed: int | None = None):
         if k < 1 or k > len(df):

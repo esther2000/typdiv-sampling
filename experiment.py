@@ -8,6 +8,7 @@ from typdiv.measures import entropy, fvi, mpd, fvo
 import concurrent.futures
 from tqdm import tqdm
 from itertools import combinations
+from dataclasses import dataclass
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -22,7 +23,7 @@ def create_arg_parser():
         "-d",
         "--dist_path",
         type=Path,
-        default=DATA / "gb_sim_bin_1.csv",  #"gb_vec_sim_0.csv",
+        default=DATA / "gb_vec_sim.csv",  # "gb_vec_sim_0.csv",
         help="File with pairwise language distances.",
     )
     parser.add_argument(
@@ -83,20 +84,30 @@ def create_arg_parser():
     parser.add_argument(
         "-counts_path",
         type=Path,
-        default= DATA / "convenience_counts.json",
+        default=DATA / "convenience_counts.json",
         help="File with language counts from previous work.",
     )
     return parser.parse_args()
+
+
+@dataclass(frozen=True)
+class Result:
+    run: int
+    ent_score_with: float
+    ent_score_without: float
+    fvi_score: float
+    mpd_score: float
+    fvo_score: float
 
 
 class Evaluator:
     def __init__(self, gb_by_lang: dict[Language, list[str]], distances) -> None:
         self.gb_by_lang = gb_by_lang
         self.n_features = len(gb_by_lang[list(gb_by_lang.keys())[0]])
-        self.cache: dict[str, tuple[float, float, float, float, float]] = dict()
+        self.cache: dict[str, Result] = dict()
         self.distances = distances
 
-    def evaluate_sample(self, sample: list[Language]) -> tuple[float, float, float, float, float]:
+    def evaluate_sample(self, sample: list[Language], run: int) -> Result:
         if (sample_key := "".join(sorted(sample))) and sample_key in self.cache:
             return self.cache[sample_key]
 
@@ -122,23 +133,25 @@ class Evaluator:
         avg_ent_without = sum(ents_without_missing) / len(ents_without_missing)
         avg_fvi = sum(fvis) / len(fvis)
 
-        result = (avg_ent_with, avg_ent_without, avg_fvi, mpd_score, fvo_score)
+        result = Result(
+            run, avg_ent_with, avg_ent_without, avg_fvi, mpd_score, fvo_score
+        )
 
         self.cache[sample_key] = result
 
         return result
 
-    def rand_runs(self, runs: int, func: SamplingFunc, N: list[Language], k: int) -> tuple[float, float, float, float]:
-        scores = [self.evaluate_sample(func(N, k, run + k)) for run in range(runs)]
-        ent_score_with = sum(i[0] for i in scores) / runs
-        ent_score_without = sum(i[1] for i in scores) / runs
-        fvi_score = sum(i[2] for i in scores) / runs
-        mpd_score = sum(i[3] for i in scores) / runs
-        fvo_score = sum(i[4] for i in scores) / runs
-
-        result = (ent_score_with, ent_score_without, fvi_score, mpd_score, fvo_score)
-
-        return result
+    def rand_runs(
+        self,
+        runs: int,
+        func: SamplingFunc,
+        N: list[Language],
+        k: int,
+    ) -> list[Result]:
+        results = [
+            self.evaluate_sample(func(N, k, run + k), run) for run in range(runs)
+        ]
+        return results
 
 
 def main():
@@ -148,7 +161,7 @@ def main():
         dist_path=args.dist_path,
         gb_path=args.gb_path,
         wals_path=args.wals_path,
-        counts_path=args.counts_path
+        counts_path=args.counts_path,
     )
 
     gb = pd.read_csv(args.gb_features_path, index_col="Lang_ID")
@@ -159,38 +172,61 @@ def main():
     gb.replace(to_replace="no_cov", value="?", inplace=True)
     gb_by_lang = {i: np.array(row) for i, row in gb.iterrows()}
 
-    dist_df = pd.read_csv(args.dist_path).set_index('Unnamed: 0')
-    dist_dict = dist_df.to_dict('dict')  # TODO: this contains double info
+    dist_df = pd.read_csv(args.dist_path).set_index("Unnamed: 0")
+    dist_dict = dist_df.to_dict("dict")  # TODO: this contains double info
 
     evaluator = Evaluator(gb_by_lang, dist_dict)
 
-    RUNS = args.rand_runs  # n runs to get an average for the random methods with a different seed per run
+    # n runs to get an average for the random methods with a different seed per run
+    RUNS = args.rand_runs
     RANGE = range(args.s, args.e + 1, args.st)
-    N = sorted(gb.index.unique())  # our frame here is all languages in grambank TODO: get this from args
+    # our frame here is all languages in grambank TODO: get this from args
+    N = sorted(gb.index.unique())
     del gb
 
-    records = []
+    # method with n runs
+    experiments = [
+        # deterministic
+        ("mdp", 1),
+        ("mmdp", 1),
+        ("convenience", 1),  # TODO: this one can become random in the future?
+        # random
+        ("random", RUNS),
+        ("random_family", RUNS),
+        ("random_genus", RUNS),
+    ]
 
+    records = []
     with concurrent.futures.ProcessPoolExecutor(max_workers=args.n_cpu) as ex:
-        # some trickery, we use the object hash of a future as a dict key
         futures = {}
         for k in RANGE:
-            # these are deterministic, so no need for runs or seeds
-            futures[ex.submit(evaluator.rand_runs, 1, sampler.sample_mdp, N, k)] = ("mdp", k)
-            futures[ex.submit(evaluator.rand_runs, 1, sampler.sample_mmdp, N, k)] = ("mmdp", k)
+            for name, runs in experiments:
+                future = ex.submit(
+                    evaluator.rand_runs, runs, getattr(sampler, f"sample_{name}"), N, k
+                )
+                # some trickery, we use the object hash of a future as a dict key
+                futures[future] = (name, k)
 
-            futures[ex.submit(evaluator.rand_runs, RUNS, sampler.sample_random, N, k)] = ("random", k)
-            futures[ex.submit(evaluator.rand_runs, RUNS, sampler.sample_random_family, N, k)] = ("random_family", k)
-            futures[ex.submit(evaluator.rand_runs, RUNS, sampler.sample_random_genus, N, k)] = ("random_genus", k)
-            futures[ex.submit(evaluator.rand_runs, RUNS, sampler.sample_convenience, N, k)] = ("convenience", k)
-
-        for res in tqdm(concurrent.futures.as_completed(futures.keys()), desc="Processing", total=len(futures)):
+        for res in tqdm(
+            concurrent.futures.as_completed(futures.keys()),
+            desc="Processing",
+            total=len(futures),
+        ):
             method, k = futures[res]
-            ent_with, ent_without, fv_incl, mpd_s, fvo_s = res.result()
-            records.append(
-                {"method": method, "entropy_with_missing": ent_with, "entropy_without_missing": ent_without,
-                 "fvi": fv_incl, "mpd": mpd_s, "fvo": fvo_s, "k": k}
-            )
+            for run_res in res.result():
+                run_res: Result
+                records.append(
+                    {
+                        "method": method,
+                        "run": run_res.run,
+                        "entropy_with_missing": run_res.ent_score_with,
+                        "entropy_without_missing": run_res.ent_score_without,
+                        "fvi": run_res.fvi_score,
+                        "mpd": run_res.mpd_score,
+                        "fvo": run_res.fvo_score,
+                        "k": k,
+                    }
+                )
 
     pd.DataFrame().from_records(records).to_csv(args.results_path, index=False)
 
