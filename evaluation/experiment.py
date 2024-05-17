@@ -1,20 +1,21 @@
 import argparse
-from typdiv.sampling import Sampler, Language, SamplingFunc
-from pathlib import Path
-import numpy as np
-import warnings
-import pandas as pd
-from typdiv.measures import entropy, fvi, mpd, fvo
 import concurrent.futures
+import warnings
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
 from tqdm import tqdm
-from itertools import combinations
-from dataclasses import dataclass
+from typdiv_sampling.evaluation import Evaluator, Result
+from typdiv_sampling.sampling import Sampler
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 # location of this file, so it does not matter from where this script is called
+# TODO: move this to a constants.py or something since it's copy pasted atm
 CWD = Path(__file__).parent
-DATA = CWD / "data"
+PROJECT_ROOT = CWD.parent
+DATA = PROJECT_ROOT / "data"
 
 
 def create_arg_parser():
@@ -23,13 +24,13 @@ def create_arg_parser():
         "-d",
         "--dist_path",
         type=Path,
-        default=DATA / "gb_vec_sim.csv",  # "gb_vec_sim_0.csv",
+        default=DATA / "gb_vec_sim.csv",
         help="File with pairwise language distances.",
     )
     parser.add_argument(
         "-gb_path",
         type=Path,
-        default=CWD / "grambank/cldf/languages.csv",
+        default=PROJECT_ROOT / "grambank/cldf/languages.csv",
         help="File with Grambank language information.",
     )
     parser.add_argument(
@@ -43,6 +44,12 @@ def create_arg_parser():
         type=Path,
         default=DATA / "gb_binarized.csv",
         help="File with Grambank features.",
+    )
+    parser.add_argument(
+        "-counts_path",
+        type=Path,
+        default=DATA / "convenience_counts.json",
+        help="File with language counts from previous work.",
     )
     parser.add_argument(
         "-r",
@@ -81,77 +88,7 @@ def create_arg_parser():
         default=5,
         help="Step size for the range of ks to test.",
     )
-    parser.add_argument(
-        "-counts_path",
-        type=Path,
-        default=DATA / "convenience_counts.json",
-        help="File with language counts from previous work.",
-    )
     return parser.parse_args()
-
-
-@dataclass(frozen=True)
-class Result:
-    run: int
-    ent_score_with: float
-    ent_score_without: float
-    fvi_score: float
-    mpd_score: float
-    fvo_score: float
-
-
-class Evaluator:
-    def __init__(self, gb_by_lang: dict[Language, list[str]], distances) -> None:
-        self.gb_by_lang = gb_by_lang
-        self.n_features = len(gb_by_lang[list(gb_by_lang.keys())[0]])
-        self.cache: dict[str, Result] = dict()
-        self.distances = distances
-
-    def evaluate_sample(self, sample: list[Language], run: int) -> Result:
-        if (sample_key := "".join(sorted(sample))) and sample_key in self.cache:
-            return self.cache[sample_key]
-
-        # Language-based methods: MPD, FVO
-        pairs = [p for p in combinations(sample, 2)]
-        mpd_score = mpd(pairs, self.distances)
-        fvo_score = fvo(pairs, self.gb_by_lang)
-
-        # Feature-based methods: Entropy, FVI
-        ents_with_missing, ents_without_missing, fvis = [], [], []
-        for i in range(self.n_features):
-            vals_with_missing, vals_without_missing = [], []
-            for lang in sample:
-                fv = self.gb_by_lang[lang][i]
-                vals_with_missing.append(fv)
-                if fv != "?":
-                    vals_without_missing.append(fv)
-            ents_with_missing.append(entropy("".join(vals_with_missing)))
-            ents_without_missing.append(entropy("".join(vals_without_missing)))
-            fvis.append(fvi("".join(vals_without_missing)))
-
-        avg_ent_with = sum(ents_with_missing) / len(ents_with_missing)
-        avg_ent_without = sum(ents_without_missing) / len(ents_without_missing)
-        avg_fvi = sum(fvis) / len(fvis)
-
-        result = Result(
-            run, avg_ent_with, avg_ent_without, avg_fvi, mpd_score, fvo_score
-        )
-
-        self.cache[sample_key] = result
-
-        return result
-
-    def rand_runs(
-        self,
-        runs: int,
-        func: SamplingFunc,
-        N: list[Language],
-        k: int,
-    ) -> list[Result]:
-        results = [
-            self.evaluate_sample(func(N, k, run + k), run) for run in range(runs)
-        ]
-        return results
 
 
 def main():

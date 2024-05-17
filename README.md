@@ -2,18 +2,54 @@
 
 Code for the paper etc. Note that this readme (and the repository in general) are a work in progress.
 
+## Usage
+### Installation
+Normal:
+```
+pip install git+https://github.com/esther2000/typdiv-sampling.git
+```
+
+With visualization support:
+```
+pip install git+https://github.com/esther2000/typdiv-sampling.git[vis]
+```
+
+*instructions on data prep script here*
+
+### Example
+```python
+from typdiv_sampling import Sampler
+
+# A list of glottocodes to sample from.
+frame = ["haio1238", "mehi1240", "nina1238", "duun1241", "turk1308", "nyan1301"]
+k = 3  # The number of languages to sample.
+seed =  # A random seed for the non-deterministic methods.
+
+# Initialize with default setup.
+sampler = Sampler(
+    dist_path=dist_path, # Language distances to use.
+    gb_path=gb_path, # Grambank csv file.
+    wals_path=wals_path, # WALS csv file
+    counts_path=counts_path, # Language count file.
+)
+sampler.sample_mdp(frame, k)
+> ['nucl1347', 'tami1289', 'thai1261'] 
+```
+
+---
+
 ### Data
 
 Here are two steps to do before language sampling:
 *Note: I'll make this nicer later.*
 
-1. Get Grambank (note to self: cite): put in folder `sources/`
+1. Get Grambank (note to self: cite)
 2. Calculate language distances: this can be done with `data/compute_all_distances.py` (note to self: file too big for github)
 
 
 ### Terminology
-`k`: the number of languages to sample (also: `max_langs`)
-`N`: languages to sample from (also: `frame`)
+- `k`: the number of languages to sample (also: `max_langs`)
+- `N`: languages to sample from (also: `frame`)
 
 ### Language sampling
 

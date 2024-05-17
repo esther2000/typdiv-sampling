@@ -1,9 +1,11 @@
-import pandas as pd
+import json
 import random
-from typdiv.typ_dist import get_summed_dist_dict, get_first_point
 from pathlib import Path
 from typing import Callable
-import json
+
+import pandas as pd
+
+from typdiv_sampling.distance import get_first_point, get_summed_dist_dict
 
 Language = str
 SamplingFunc = Callable[[list[Language], int, int], list[Language]]
@@ -11,7 +13,9 @@ METHODS = ["random", "random_family", "random_genus", "mdp", "mmdp", "convenienc
 
 
 class Sampler:
-    def __init__(self, dist_path: Path, gb_path: Path, wals_path: Path, counts_path: Path) -> None:
+    def __init__(
+        self, dist_path: Path, gb_path: Path, wals_path: Path, counts_path: Path
+    ) -> None:
         for p in [dist_path, gb_path, wals_path, counts_path]:
             if not p.exists():
                 raise FileNotFoundError(f"Cannot find {p}")
@@ -26,7 +30,9 @@ class Sampler:
         self._wals_df = None
         self._counts = None
 
-    def sample_mdp(self, frame: list[Language], k: int, random_seed: int | None = None) -> list[Language]:
+    def sample_mdp(
+        self, frame: list[Language], k: int, random_seed: int | None = None
+    ) -> list[Language]:
         """
         Maximum Diversity Problem (MaxSum)
         Sample k languages from N, where we iteratively add the
@@ -45,9 +51,11 @@ class Sampler:
             all_langs.remove(next_most_distant)
             langs.append(next_most_distant)
 
-        return [id2lang[i] for i in langs]
+        return sorted([id2lang[i] for i in langs])
 
-    def sample_mmdp(self, frame: list[Language], k: int, random_seed: int | None = None) -> list[Language]:
+    def sample_mmdp(
+        self, frame: list[Language], k: int, random_seed: int | None = None
+    ) -> list[Language]:
         """
         MaxMin Diversity Problem
         Sample k languages from N, where we iteratively add the
@@ -67,45 +75,59 @@ class Sampler:
             rest_dists = dists[rest_L, :].T[tuple(S), :].T
             S.add(rest_L[rest_dists.min(axis=1).argmax()])
 
-        return [id2lang[i] for i in S]
+        return sorted([id2lang[i] for i in S])
 
-    def sample_random(self, frame: list[Language], k: int, random_seed: int | None = None) -> list[Language]:
+    def sample_random(
+        self, frame: list[Language], k: int, random_seed: int | None = None
+    ) -> list[Language]:
         """Sample k from N completely randomly"""
         # local random instance to make this thread safe
         rand = random.Random(random_seed)
-        return rand.sample(frame, k)
+        return sorted(rand.sample(frame, k))
 
-    def sample_random_family(self, frame: list[Language], k: int, random_seed: int | None = None) -> list[Language]:
+    def sample_random_family(
+        self, frame: list[Language], k: int, random_seed: int | None = None
+    ) -> list[Language]:
         """
         Sample k languages from N where we sample from
         language families as uniformly as the data allows.
         """
         df = self.gb_df[self.gb_df["Glottocode"].isin(frame)]
-        return self._df_sample(df, "Family_name", k, random_seed)
+        return sorted(self._df_sample(df, "Family_name", k, random_seed))
 
-    def sample_random_genus(self, frame: list[Language], k: int, random_seed: int | None = None) -> list[Language]:
+    def sample_random_genus(
+        self, frame: list[Language], k: int, random_seed: int | None = None
+    ) -> list[Language]:
         """
         Sample k languages from N where we sample from
         language genera as uniformly as the data allows.
         """
         df = self.wals_df[self.wals_df["Glottocode"].isin(frame)]
-        return self._df_sample(df, "Genus", k, random_seed)
+        return sorted(self._df_sample(df, "Genus", k, random_seed))
 
-    def sample_convenience(self, frame: list[Language], k: int, random_seed: int | None = None) -> list[Language]:
+    def sample_convenience(
+        self, frame: list[Language], k: int, random_seed: int | None = None
+    ) -> list[Language]:
         """
         Sample k most-used languages from the literature on 'typologically diverse' language samples
         TODO: this can be max 195 --> change experiments to less than 500? or just lower number for this baseline?
         TODO: implement random selection in case of frequency tie
         """
         # filter so we're using only those language that are in our frame
-        counts = [(lang, lang_count) for lang, lang_count in self.counts if lang in frame]
+        counts = [
+            (lang, lang_count) for lang, lang_count in self.counts if lang in frame
+        ]
         if len(counts) < k:
-            raise ValueError(f"The {len(counts)} languages in the convenience list are not enough to sample {k=}.")
-        return [lang for lang, _ in counts[:k]]
+            raise ValueError(
+                f"Invalid value {k=}, we only have {len(counts)} languages to sample from."
+            )
+        return sorted([lang for lang, _ in counts[:k]])
 
-    def _df_sample(self, df: pd.DataFrame, key: str, k: int, random_seed: int | None = None):
+    def _df_sample(
+        self, df: pd.DataFrame, key: str, k: int, random_seed: int | None = None
+    ):
         if k < 1 or k > len(df):
-            raise ValueError("Invalid value for k, make sure k > 0 and k <= len(N)")
+            raise ValueError(f"Invalid value {k=}, make sure k > 0 and k <= len(N)")
 
         codes = (
             # Sample one language from each key
@@ -137,7 +159,9 @@ class Sampler:
         )
         # Fill up the remaining langs by random selection from all groups
         while len(codes) < k:
-            new_sample = df[~(df["Glottocode"].isin(codes))].sample(1, random_state=random_seed)
+            new_sample = df[~(df["Glottocode"].isin(codes))].sample(
+                1, random_state=random_seed
+            )
             codes.append(new_sample["Glottocode"].values[0])
 
         return codes
@@ -174,7 +198,7 @@ class Sampler:
     def counts(self):
         """Language counts list, lazily loaded."""
         if self._counts is None:
-            with open(self.counts_path, 'r') as s:
+            with open(self.counts_path, "r") as s:
                 counts = json.load(s)
             self._counts = sorted(counts.items(), key=lambda x: x[1], reverse=True)
         return self._counts

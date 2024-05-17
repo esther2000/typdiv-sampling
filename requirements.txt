@@ -1,8 +1,0 @@
-pandas
-scikit-learn
-pyarrow
-matplotlib
-seaborn
-tqdm
-altair
-vl-convert-python

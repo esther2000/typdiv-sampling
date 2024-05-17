@@ -1,6 +1,7 @@
 from pathlib import Path
-from typdiv.sampling import Sampler
+
 import pytest
+from typdiv_sampling import Sampler
 
 CWD = Path(__file__).parent
 FIXTURES = CWD / "fixtures"
@@ -11,6 +12,7 @@ def test_df_sampling():
         dist_path=FIXTURES / "fake_dists.csv",
         gb_path=FIXTURES / "fake_gb.csv",
         wals_path=FIXTURES / "fake_wals.csv",
+        counts_path=FIXTURES / "fake_counts.json",
     )
 
     """
@@ -20,11 +22,15 @@ def test_df_sampling():
     WALS test subset:
         58 languages
         46 genera
+    Convenience:
+        100 GB languages with fake counts
     Distances test subset:
         covers distances between all 100 languages
     """
 
-    gb_frame = [l.strip() for l in (FIXTURES / "gb_frame_100.txt").read_text().split("\n")]
+    gb_frame = [
+        lang.strip() for lang in (FIXTURES / "gb_frame_100.txt").read_text().split("\n")
+    ]
 
     # sample what we need, randomly from the families
     assert len(sampler.sample_random_family(gb_frame, 34)) == 34
@@ -39,8 +45,13 @@ def test_df_sampling():
     assert len(sampler.sample_random_genus(gb_frame, 46)) == 46
     assert len(sampler.sample_random_genus(gb_frame, 55)) == 55
 
-    with pytest.raises(ValueError, match="Invalid value for k"):
+    assert len(sampler.sample_convenience(gb_frame, 80)) == 80
+
+    with pytest.raises(ValueError, match="Invalid value"):
+        sampler.sample_convenience(gb_frame, 101)
+
+    with pytest.raises(ValueError, match="Invalid value"):
         sampler.sample_random_genus(gb_frame, 100)
 
-    with pytest.raises(ValueError, match="Invalid value for k"):
+    with pytest.raises(ValueError, match="Invalid value"):
         sampler.sample_random_genus(gb_frame, 0)

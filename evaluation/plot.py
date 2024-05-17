@@ -1,7 +1,8 @@
-import pandas as pd
-from pathlib import Path
-import altair as alt
 import argparse
+from pathlib import Path
+
+import altair as alt
+import pandas as pd
 
 CWD = Path(__file__).parent
 
@@ -26,7 +27,6 @@ def create_arg_parser():
 
 
 def main():
-
     args = create_arg_parser()
 
     df = pd.read_csv(args.results_file)
@@ -44,13 +44,24 @@ def main():
                 # scale=alt.Scale(domain=[1.0, 1.14]),
                 title="Entropy",
             ),
-            color=alt.Color('method').scale(range=['steelblue', '#7D3C98', 'chartreuse', '#F4D03F', 'red', '#D35400', ])
+            color=alt.Color("method").scale(
+                range=[
+                    "steelblue",
+                    "#7D3C98",
+                    "chartreuse",
+                    "#F4D03F",
+                    "red",
+                    "#D35400",
+                ]
+            ),
         )
-        .configure_axis(labelFontSize=12, labelFont="serif", titleFontSize=16, titleFont="serif")
+        .configure_axis(
+            labelFontSize=12, labelFont="serif", titleFontSize=16, titleFont="serif"
+        )
     )
 
     plot.save(args.outfile)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

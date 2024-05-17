@@ -1,19 +1,15 @@
-"""
-Description:    Sample k languages from N, using different methods
-Usage:          python main.py -s <SAMPLING_METHODS> -k <NUM_LANGS> -f <ALL_LANGS> -d <LANG_SIM>
-"""
-
 import argparse
-from typdiv.sampling import Sampler, METHODS
+import warnings
 from pathlib import Path
 
-import warnings
+from typdiv_sampling import METHODS, Sampler
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 # location of this file, so it does not matter from where this script is called
 CWD = Path(__file__).parent
-DATA = CWD / "data"
+PROJECT_ROOT = CWD.parent
+DATA = PROJECT_ROOT / "data"
 
 
 def create_arg_parser():
@@ -44,13 +40,13 @@ def create_arg_parser():
         "-d",
         "--dist_path",
         type=Path,
-        default=DATA / "gb_vec_sim_0.csv",
+        default=DATA / "gb_vec_sim.csv",
         help="File with pairwise language distances.",
     )
     parser.add_argument(
         "-gb_path",
         type=Path,
-        default=CWD / "grambank/cldf/languages.csv",
+        default=PROJECT_ROOT / "grambank/cldf/languages.csv",
         help="File with Grambank language information.",
     )
     parser.add_argument(
@@ -58,6 +54,18 @@ def create_arg_parser():
         type=Path,
         default=DATA / "wals_dedup.csv",
         help="File with WALS language information.",
+    )
+    parser.add_argument(
+        "-gb_features_path",
+        type=Path,
+        default=DATA / "gb_binarized.csv",
+        help="File with Grambank features.",
+    )
+    parser.add_argument(
+        "-counts_path",
+        type=Path,
+        default=DATA / "convenience_counts.json",
+        help="File with language counts from previous work.",
     )
     parser.add_argument(
         "-seed",
@@ -70,7 +78,6 @@ def create_arg_parser():
 
 
 def main():
-
     args = create_arg_parser()
 
     # define sampling frame
@@ -81,6 +88,7 @@ def main():
         dist_path=args.dist_path,
         gb_path=args.gb_path,
         wals_path=args.wals_path,
+        counts_path=args.counts_path,
     )
 
     for method in args.sampling_method:
@@ -91,6 +99,7 @@ def main():
         sample = getattr(sampler, f"sample_{method}")(frame, args.k_langs, args.seed)
         outfile = f"evaluation/samples/{method}-{args.frame_path.stem}-{args.k_langs}-{args.dist_path.stem}-{args.seed}.txt"
         Path(outfile).write_text("\n".join(sample))
+        print(f"Result written to {outfile}\n\n{sample=}")
 
 
 if __name__ == "__main__":

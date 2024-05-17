@@ -1,5 +1,6 @@
-import numpy as np
 from collections import defaultdict
+
+import numpy as np
 
 
 def dist(p1, p2):

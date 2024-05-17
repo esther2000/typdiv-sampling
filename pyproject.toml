@@ -1,2 +1,48 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "typdiv_sampling"
+version = "0.1"
+dependencies = ["tqdm", "pandas", "scikit-learn"]
+requires-python = ">= 3.9"
+authors = [
+    { name = "Esther Ploeger", email = "espl@cs.aau.dk" },
+    { name = "Wessel Poelman", email = "wessel.poelman@kuleuven.be" },
+]
+maintainers = [
+    { name = "Esther Ploeger", email = "espl@cs.aau.dk" },
+    { name = "Wessel Poelman", email = "wessel.poelman@kuleuven.be" },
+]
+description = "Language sampling framework."
+readme = "README.md"
+license = { file = "LICENSE" }
+keywords = [
+    "NLP",
+    "linguistic typology",
+    "multilingual",
+    "distances",
+    "sampling",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+[project.optional-dependencies]
+# TODO: Split into viz and dev dependencies
+vis = [
+    "pytest",
+    "pyarrow",
+    "altair",
+    "vl-convert-python",
+    "fiject @ git+https://github.com/bauwenst/fiject.git",
+]
+
+[project.urls]
+Repository = "https://github.com/esther2000/typdiv-sampling"
+"Bug Tracker" = "https://github.com/esther2000/typdiv-sampling/issues"
+
 [tool.pytest.ini_options]
 pythonpath = ["."]
