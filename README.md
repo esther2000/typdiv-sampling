@@ -11,7 +11,7 @@ pip install git+https://github.com/esther2000/typdiv-sampling.git
 
 With visualization support:
 ```
-pip install git+https://github.com/esther2000/typdiv-sampling.git[vis]
+pip install "git+https://github.com/esther2000/typdiv-sampling.git[vis]"
 ```
 
 *instructions on data prep script here*
