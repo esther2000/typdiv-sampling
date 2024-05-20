@@ -3,5 +3,11 @@
 - [ ] make sure `evaluation/experiments/*.csv` can be pushed (gitignore) once final experiment results are done!
 - [ ] add proper instructions to readme + clean up readme
 - [ ] check TODO comments in code
+- [ ] deal with logical dependencies as a result of binarisation: weighting (?)
+- [ ] add feature (group) inclusion / exclusion functionality
+- [ ] downstream experiments (will be a lot)
+- [ ] algorithm comparison: complexity, efficiency, accuracy (vs. brute force?)
+- [x] implement typological evaluation (intrinsic) metrics
+- [x] normalise distances
 - [x] check if everything works
 - [x] sort outputs
