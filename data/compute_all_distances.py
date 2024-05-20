@@ -10,6 +10,7 @@ import argparse
 
 import pandas as pd
 from sklearn.metrics.pairwise import nan_euclidean_distances
+from sklearn.preprocessing import MinMaxScaler
 
 
 def create_arg_parser():
@@ -33,6 +34,12 @@ def create_arg_parser():
         "--binarize",
         action="store_true",
         help="Option for binarizing multi-value features",
+    )
+    parser.add_argument(
+        "-n",
+        "--normalize",
+        action="store_true",
+        help="Option for normalizing distances (min-max)",
     )
     args = parser.parse_args()
     return args
@@ -73,7 +80,6 @@ def main():
     # Optional: binarize multi-value features
     if args.binarize:
         gb_matrix, gb_feats = binarize(gb_matrix, mv_feats)
-        gb_matrix.to_csv("gb_binarized.csv")
 
     # Make vector per language
     lang_vecs = {
@@ -92,6 +98,11 @@ def main():
 
     # Write to file
     sim_df = pd.DataFrame(sim_matrix, columns=langs, index=langs).fillna(0)
+    if args.normalize:
+        scaler = MinMaxScaler()
+        norm_data = scaler.fit_transform(sim_df)
+        sim_df = pd.DataFrame(norm_data, columns=sim_df.columns)
+
     sim_df.to_csv(args.output_file)
 
 
