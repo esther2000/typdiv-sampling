@@ -101,7 +101,7 @@ def main():
     if args.normalize:
         scaler = MinMaxScaler()
         norm_data = scaler.fit_transform(sim_df)
-        sim_df = pd.DataFrame(norm_data, columns=sim_df.columns)
+        sim_df = pd.DataFrame(norm_data, columns=sim_df.columns, index=langs).fillna(0)
 
     sim_df.to_csv(args.output_file)
 
