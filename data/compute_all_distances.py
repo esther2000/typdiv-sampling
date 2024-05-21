@@ -15,13 +15,6 @@ from sklearn.metrics.pairwise import nan_euclidean_distances
 def create_arg_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-g",
-        "--gb_folder",
-        type=str,
-        default="sources/grambank-v1.0.3",
-        help="Folder where Grambank download is stored",
-    )
-    parser.add_argument(
         "-o",
         "--output_file",
         type=str,
@@ -39,6 +32,12 @@ def create_arg_parser():
         "--normalize",
         action="store_true",
         help="Option for normalizing distances (min-max)",
+    )
+    parser.add_argument(
+        "-g",
+        "--gb_file",
+        default="gb_lang_feat_vals.csv",
+        help="Path to Grambank file with features per language.",
     )
     args = parser.parse_args()
     return args
@@ -77,7 +76,7 @@ def main():
     }  # IDs and num possible values
 
     # Load Grambank matrix
-    gb_matrix = pd.read_csv("gb_lang_feat_vals.csv")
+    gb_matrix = pd.read_csv(args.gb_file)
     gb_feats = [x for x in gb_matrix.columns.to_list() if x.startswith("GB")]
 
     # Optional: binarize multi-value features
