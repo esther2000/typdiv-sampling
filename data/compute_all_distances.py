@@ -2,8 +2,6 @@
 """
 Description:    Calculate distances between pairs of languages based on Grambank feature values
 Usage:          python compute_all_distances.py -g <GRAMBANK_FOLDER> -o <OUTPUT_FILE> -b (optional)
-
-TODO: add weighted similarity: rare features, transfer learning relevance
 """
 
 import argparse
@@ -44,18 +42,31 @@ def create_arg_parser():
 
 
 def binarize(gb_df, mv_feats):
-    """Binarize multi-value features"""
-    for feat in mv_feats.keys():
-        for val in range(0, mv_feats[feat]):
-            # binarize multi-value features
-            gb_df[f"{feat}_{str(val)}"] = (
-                (gb_df[f"{feat}"] == str(val)).astype(int).astype(str)
-            )
-            # if the original value was "?", put it back
-            gb_df.loc[gb_df[f"{feat}"] == "?", f"{feat}_{str(val)}"] = "?"
+    """Binarize multi-value features
+    TODO: this could probably be done more elegantly but it works"""
+    for feat in mv_feats:
+
+        gb_df[f"{feat}_1"] = ((gb_df[f"{feat}"] == "1").astype(int).astype(str))  # label 1
+        gb_df[f"{feat}_2"] = ((gb_df[f"{feat}"] == "2").astype(int).astype(str))  # label 2
+
+        # label 3 (both)
+        gb_df.loc[gb_df[f"{feat}"] == "3", f"{feat}_1"] = "1"
+        gb_df.loc[gb_df[f"{feat}"] == "3", f"{feat}_2"] = "1"
+
+        # label 0 (none)
+        gb_df.loc[gb_df[f"{feat}"] == "0", f"{feat}_1"] = "0"
+        gb_df.loc[gb_df[f"{feat}"] == "0", f"{feat}_2"] = "0"
+
+        # if original value was '?', put this back
+        gb_df.loc[gb_df[f"{feat}"] == "?", f"{feat}_1"] = "?"
+        gb_df.loc[gb_df[f"{feat}"] == "?", f"{feat}_2"] = "?"
+
+        # if original value was 'no_cov', put this back
+        gb_df.loc[gb_df[f"{feat}"] == "no_cov", f"{feat}_1"] = "no_cov"
+        gb_df.loc[gb_df[f"{feat}"] == "no_cov", f"{feat}_2"] = "no_cov"
 
     # remove original multi-value feature columns
-    gb_df = gb_df.drop(columns=mv_feats.keys())
+    gb_df = gb_df.drop(columns=mv_feats)
 
     return gb_df, gb_df.columns.to_list()[2:]
 
@@ -66,14 +77,7 @@ def normalize(x, x_min, x_max):
 
 def main():
     args = create_arg_parser()
-    mv_feats = {
-        "GB024": 3,
-        "GB025": 3,
-        "GB065": 3,
-        "GB130": 3,
-        "GB193": 4,
-        "GB203": 4,
-    }  # IDs and num possible values
+    mv_feats = ["GB024", "GB025", "GB065", "GB130", "GB193", "GB203"]
 
     # Load Grambank matrix
     gb_matrix = pd.read_csv(args.gb_file)
