@@ -14,7 +14,7 @@ def create_arg_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-o",
-        "--output_file",
+        "--output_dist_file",
         type=str,
         default="gb_vec_sim.csv",
         help="Name of file that output distances should be written to",
@@ -24,6 +24,13 @@ def create_arg_parser():
         "--binarize",
         action="store_true",
         help="Option for binarizing multi-value features",
+    )
+    parser.add_argument(
+        "-d",
+        "--data_output_file",
+        type=str,
+        default="gb_binarized.csv",
+        help="Name of file that binarized grambank version should be written to",
     )
     parser.add_argument(
         "-n",
@@ -86,6 +93,7 @@ def main():
     # Optional: binarize multi-value features
     if args.binarize:
         gb_matrix, gb_feats = binarize(gb_matrix, mv_feats)
+        gb_matrix.to_csv(args.data_output_file)
 
     # Make vector per language
     lang_vecs = {
@@ -107,7 +115,7 @@ def main():
     if args.normalize:
         sim_df = sim_df.map(normalize, x_min=sim_df.min().min(), x_max=sim_df.max().max())
 
-    sim_df.to_csv(args.output_file)
+    sim_df.to_csv(args.output_dist_file)
 
 
 if __name__ == "__main__":
