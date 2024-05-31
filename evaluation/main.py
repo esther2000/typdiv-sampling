@@ -10,6 +10,7 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 CWD = Path(__file__).parent
 PROJECT_ROOT = CWD.parent
 DATA = PROJECT_ROOT / "data"
+EVAL = PROJECT_ROOT / "evaluation"
 
 
 def create_arg_parser():
@@ -97,7 +98,7 @@ def main():
             continue
 
         sample = getattr(sampler, f"sample_{method}")(frame, args.k_langs, args.seed)
-        outfile = f"evaluation/samples/{method}-{args.frame_path.stem}-{args.k_langs}-{args.dist_path.stem}-{args.seed}.txt"
+        outfile = f"{EVAL / 'samples'}{method}-{args.frame_path.stem}-{args.k_langs}-{args.dist_path.stem}-{args.seed}.txt"
         Path(outfile).write_text("\n".join(sample))
         print(f"Result written to {outfile}\n\n{sample=}")
 
