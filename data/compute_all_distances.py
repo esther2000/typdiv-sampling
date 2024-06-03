@@ -8,6 +8,13 @@ import argparse
 
 import pandas as pd
 from sklearn.metrics.pairwise import nan_euclidean_distances
+from pathlib import Path
+
+# location of this file, so it does not matter from where this script is called
+# TODO: move this to a constants.py or something since it's copy pasted atm
+CWD = Path(__file__).parent
+PROJECT_ROOT = CWD.parent
+DATA = PROJECT_ROOT / "data"
 
 
 def create_arg_parser():
@@ -15,8 +22,8 @@ def create_arg_parser():
     parser.add_argument(
         "-o",
         "--output_dist_file",
-        type=str,
-        default="gb_vec_sim.csv",
+        type=Path,
+        default=DATA / "gb_vec_sim.csv",
         help="Name of file that output distances should be written to",
     )
     parser.add_argument(
@@ -28,8 +35,8 @@ def create_arg_parser():
     parser.add_argument(
         "-d",
         "--data_output_file",
-        type=str,
-        default="gb_binarized.csv",
+        type=Path,
+        default=DATA / "gb_binarized.csv",
         help="Name of file that binarized grambank version should be written to",
     )
     parser.add_argument(
@@ -41,7 +48,7 @@ def create_arg_parser():
     parser.add_argument(
         "-g",
         "--gb_file",
-        default="gb_lang_feat_vals.csv",
+        default=DATA / "gb_lang_feat_vals.csv",
         help="Path to Grambank file with features per language.",
     )
     args = parser.parse_args()
@@ -52,9 +59,12 @@ def binarize(gb_df, mv_feats):
     """Binarize multi-value features
     TODO: this could probably be done more elegantly but it works"""
     for feat in mv_feats:
-
-        gb_df[f"{feat}_1"] = ((gb_df[f"{feat}"] == "1").astype(int).astype(str))  # label 1
-        gb_df[f"{feat}_2"] = ((gb_df[f"{feat}"] == "2").astype(int).astype(str))  # label 2
+        gb_df[f"{feat}_1"] = (
+            (gb_df[f"{feat}"] == "1").astype(int).astype(str)
+        )  # label 1
+        gb_df[f"{feat}_2"] = (
+            (gb_df[f"{feat}"] == "2").astype(int).astype(str)
+        )  # label 2
 
         # label 3 (both)
         gb_df.loc[gb_df[f"{feat}"] == "3", f"{feat}_1"] = "1"
@@ -79,7 +89,7 @@ def binarize(gb_df, mv_feats):
 
 
 def normalize(x, x_min, x_max):
-    return (x-x_min) / (x_max-x_min)
+    return (x - x_min) / (x_max - x_min)
 
 
 def main():
@@ -113,7 +123,9 @@ def main():
     # Write to file
     sim_df = pd.DataFrame(sim_matrix, columns=langs, index=langs).fillna(0)
     if args.normalize:
-        sim_df = sim_df.map(normalize, x_min=sim_df.min().min(), x_max=sim_df.max().max())
+        sim_df = sim_df.map(
+            normalize, x_min=sim_df.min().min(), x_max=sim_df.max().max()
+        )
 
     sim_df.to_csv(args.output_dist_file)
 

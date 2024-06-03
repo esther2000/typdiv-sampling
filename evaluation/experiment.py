@@ -126,8 +126,8 @@ def main():
         # deterministic
         ("mdp", 1),
         ("mmdp", 1),
-        ("convenience", 1),  # TODO: this one can become random in the future?
         # random
+        ("convenience", RUNS),
         ("random", RUNS),
         ("random_family", RUNS),
         ("random_genus", RUNS),
