@@ -25,7 +25,7 @@ def test_df_sampling():
     Convenience:
         100 GB languages with fake counts
     Distances test subset:
-        covers distances between all 100 languages
+        covers distances between all 100 languages (a lot of ties)
     """
 
     gb_frame = [
@@ -46,6 +46,11 @@ def test_df_sampling():
     assert len(sampler.sample_random_genus(gb_frame, 55)) == 55
 
     assert len(sampler.sample_convenience(gb_frame, 80)) == 80
+
+    conv_a = sampler.sample_convenience(gb_frame, 80, random_seed=1)
+    conv_b = sampler.sample_convenience(gb_frame, 80, random_seed=2)
+
+    assert conv_a != conv_b
 
     with pytest.raises(ValueError, match="Invalid value"):
         sampler.sample_convenience(gb_frame, 101)

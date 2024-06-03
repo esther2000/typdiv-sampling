@@ -1,5 +1,6 @@
 import json
 import random
+from collections import defaultdict
 from pathlib import Path
 from typing import Callable
 
@@ -111,16 +112,31 @@ class Sampler:
         """
         Sample k most-used languages from the literature on 'typologically diverse' language samples
         TODO: this can be max 195 --> change experiments to less than 500? or just lower number for this baseline?
-        TODO: implement random selection in case of frequency tie
         """
-        # filter so we're using only those language that are in our frame
-        counts = [
-            (lang, lang_count) for lang, lang_count in self.counts if lang in frame
-        ]
-        if len(counts) < k:
+        rand = random.Random(random_seed)
+
+        # Filter so we're using only those language that are in our frame
+        grouped_counts = defaultdict(list)
+        n_langs = 0
+        for lang, lang_count in self.counts:
+            if lang not in frame:
+                continue
+            n_langs += 1
+            # Group by count and shuffle lists so ties are random
+            grouped_counts[lang_count].append(lang)
+
+        if n_langs < k:
             raise ValueError(
-                f"Invalid value {k=}, we only have {len(counts)} languages to sample from."
+                f"Invalid value {k=}, we only have {n_langs} languages to sample from."
             )
+
+        # Flatten list
+        counts = []
+        for count, languages in grouped_counts.items():
+            shuffled_langs = rand.sample(languages, k=len(languages))
+            for lang in shuffled_langs:
+                counts.append((lang, count))
+
         return sorted([lang for lang, _ in counts[:k]])
 
     def _df_sample(
