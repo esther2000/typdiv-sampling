@@ -143,7 +143,7 @@ class Sampler:
         self, df: pd.DataFrame, key: str, k: int, random_seed: int | None = None
     ):
         if k < 1 or k > len(df):
-            raise ValueError(f"Invalid value {k=}, make sure k > 0 and k <= len(N)")
+            raise ValueError(f"Invalid value {k=}, make sure k > 0 and k <= {len(df)}")
 
         codes = (
             # Sample one language from each key

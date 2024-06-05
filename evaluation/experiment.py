@@ -54,9 +54,16 @@ def create_arg_parser():
     parser.add_argument(
         "-r",
         "--results_path",
-        type=str,
+        type=Path,
         required=True,
         help="CSV to write results to.",
+    )
+    parser.add_argument(
+        "-f",
+        "--frame_path",
+        type=Path,
+        default=DATA / "frames/langs_gb.txt",
+        help="Frame to sample from as a text file with one Glottocode per line.",
     )
     parser.add_argument(
         "-n_cpu",
@@ -116,9 +123,8 @@ def main():
 
     # n runs to get an average for the random methods with a different seed per run
     RUNS = args.rand_runs
-    RANGE = range(args.s, args.e + 1, args.st)
-    # our frame here is all languages in grambank TODO: get this from args
-    N = sorted(gb.index.unique())
+    RANGE = [args.s] if args.s == args.e else range(args.s, args.e + 1, args.st)
+    N = sorted([g_code.strip() for g_code in args.frame_path.read_text().split("\n")])
     del gb
 
     # method with n runs
@@ -162,6 +168,7 @@ def main():
                         "mpd": run_res.mpd_score,
                         "fvo": run_res.fvo_score,
                         "k": k,
+                        "sample": ",".join(sorted(run_res.sample)),
                     }
                 )
 

@@ -64,6 +64,7 @@ class Result:
     fvi_score: float
     mpd_score: float
     fvo_score: float
+    sample: set[Language]
 
 
 class Evaluator:
@@ -102,7 +103,13 @@ class Evaluator:
         avg_fvi = sum(fvis) / len(fvis)
 
         result = Result(
-            run, avg_ent_with, avg_ent_without, avg_fvi, mpd_score, fvo_score
+            run,
+            avg_ent_with,
+            avg_ent_without,
+            avg_fvi,
+            mpd_score,
+            fvo_score,
+            set(sample),
         )
 
         self.cache[sample_key] = result
