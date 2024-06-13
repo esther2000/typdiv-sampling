@@ -155,6 +155,6 @@ cython_debug/
 *.pdf
 
 # 100mb file
-data/gb_vec_sim_0.csv
+data/gb_vec_sim*
 data/bin-norm-distances.csv
 data/gb_binarized.csv
