@@ -52,6 +52,12 @@ def create_arg_parser():
         help="Option: specify minimum feature coverage per language",
     )
     parser.add_argument(
+        "-r",
+        "--remove_macro",
+        action="store_true",
+        help="Option: remove macrolanguages",
+    )
+    parser.add_argument(
         "-g",
         "--gb_file",
         default=DATA / "gb_lang_feat_vals.csv",
@@ -109,6 +115,18 @@ def crop(gb_df, perc):
     return gb_df
 
 
+def filter_macrolangs(gb_df):
+    """Filter out macrolanguages (e.g. Central pacific linkage) """
+    glottolog_data = pd.read_csv(DATA/"languoid.csv")
+    child_langs = {row['id']: row['child_language_count'] for _, row in glottolog_data.iterrows()}
+
+    for i, row in gb_df.iterrows():
+        if child_langs[row["Lang_ID"]] > 0:
+            gb_df = gb_df.drop(i)
+
+    return gb_df
+
+
 def main():
     args = create_arg_parser()
     mv_feats = ["GB024", "GB025", "GB065", "GB130", "GB193", "GB203"]
@@ -125,6 +143,11 @@ def main():
     # Optional: crop langs according to feature coverage
     if args.crop_perc:  # specify minimum % coverage per lang
         gb_matrix = crop(gb_matrix, args.crop_perc)
+        gb_matrix.to_csv(args.data_output_file)
+
+    # Optional: remove macrolanguages
+    if args.remove_macro:
+        gb_matrix = filter_macrolangs(gb_matrix)
         gb_matrix.to_csv(args.data_output_file)
 
     # Make vector per language
