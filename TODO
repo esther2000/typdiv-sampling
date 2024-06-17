@@ -1,12 +1,13 @@
-- [ ] make script that prepares all gb, wals, distance data and make sure the 'drop col' stuff is not necessary anymore.
+- [ ] make script that prepares all gb, wals, distance data and make sure the 'drop col' stuff is not necessary anymore. --> please check compute_distances.py carefully when doing this xx
 - [ ] clean up `evaluation` folder
 - [ ] make sure `evaluation/experiments/*.csv` can be pushed (gitignore) once final experiment results are done!
 - [ ] add proper instructions to readme + clean up readme
 - [ ] check TODO comments in code
-- [ ] deal with logical dependencies as a result of binarisation: weighting (?)
-- [ ] add feature (group) inclusion / exclusion functionality
-- [ ] downstream experiments (will be a lot)
-- [ ] algorithm comparison: complexity, efficiency, accuracy (vs. brute force?)
+- [x] deal with logical dependencies as a result of binarisation
+- [x] add feature (group) inclusion / exclusion functionality
+- [ ] downstream experiments
+- [x] add cropping (language-level only?)
+- [x] add option for removing macrolanguages
 - [x] implement typological evaluation (intrinsic) metrics
 - [x] normalise distances
 - [x] check if everything works
