@@ -7,8 +7,7 @@ from typdiv_sampling import METHODS, Sampler
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 # location of this file, so it does not matter from where this script is called
-CWD = Path(__file__).parent
-PROJECT_ROOT = CWD.parent
+PROJECT_ROOT = Path(__file__).parent
 DATA = PROJECT_ROOT / "data"
 EVAL = PROJECT_ROOT / "evaluation"
 
@@ -34,7 +33,7 @@ def create_arg_parser():
         "-f",
         "--frame_path",
         type=Path,
-        default=DATA / "frames/langs_gb.txt",
+        default=DATA / "frames/gb_frame-bnrc75.txt",
         help="File with languages to select from, one Glottocode per line.",
     )
     parser.add_argument(
@@ -59,13 +58,13 @@ def create_arg_parser():
     parser.add_argument(
         "-gb_features_path",
         type=Path,
-        default=DATA / "gb_binarized.csv",
+        default=DATA / "gb_processed.csv",
         help="File with Grambank features.",
     )
     parser.add_argument(
         "-counts_path",
         type=Path,
-        default=DATA / "convenience_counts.json",
+        default=DATA / "convenience/convenience_counts.json",
         help="File with language counts from previous work.",
     )
     parser.add_argument(
@@ -98,7 +97,7 @@ def main():
             continue
 
         sample = getattr(sampler, f"sample_{method}")(frame, args.k_langs, args.seed)
-        outfile = f"{EVAL / 'samples'}{method}-{args.frame_path.stem}-{args.k_langs}-{args.dist_path.stem}-{args.seed}.txt"
+        outfile = f"{EVAL}/samples/{method}-{args.frame_path.stem}-{args.k_langs}-{args.dist_path.stem}-{args.seed}.txt"
         Path(outfile).write_text("\n".join(sample))
         print(f"Result written to {outfile}\n\n{sample=}")
 

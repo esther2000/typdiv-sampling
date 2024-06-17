@@ -23,7 +23,7 @@ def create_arg_parser():
         "-o",
         "--output_dist_file",
         type=Path,
-        default=DATA / "gb_vec_sim.csv",
+        default=DATA / "gb_lang_dists.csv",
         help="Name of file that output distances should be written to",
     )
     parser.add_argument(
@@ -36,8 +36,8 @@ def create_arg_parser():
         "-d",
         "--data_output_file",
         type=Path,
-        default=DATA / "gb_binarized.csv",
-        help="Name of file that binarized grambank version should be written to",
+        default=DATA / "gb_processed.csv",
+        help="Name of file that post-processed (bin/norm/crop/filter) grambank version should be written to",
     )
     parser.add_argument(
         "-n",
@@ -181,13 +181,17 @@ def main():
     sim_matrix = nan_euclidean_distances(vecs, vecs)
 
     # Write to file
-    sim_df = pd.DataFrame(sim_matrix, columns=langs, index=langs).fillna(0)
+    sim_df = pd.DataFrame(sim_matrix, columns=langs, index=langs).fillna(0)  # NOTE: 0 for maximisation only!
     if args.normalize:
         sim_df = sim_df.map(
             normalize, x_min=sim_df.min().min(), x_max=sim_df.max().max()
         )
 
     sim_df.to_csv(args.output_dist_file)
+
+    #with open('gb_frame-bnrc75.txt', 'w') as frame:  # TODO: add this formally? (output depends on options!)
+      #  for l in langs:
+           # frame.write(l+"\n")
 
 
 if __name__ == "__main__":

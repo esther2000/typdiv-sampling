@@ -24,7 +24,7 @@ def create_arg_parser():
         "-d",
         "--dist_path",
         type=Path,
-        default=DATA / "gb_vec_sim.csv",
+        default=DATA / "gb_lang_dists.csv",
         help="File with pairwise language distances.",
     )
     parser.add_argument(
@@ -42,13 +42,13 @@ def create_arg_parser():
     parser.add_argument(
         "-gb_features_path",
         type=Path,
-        default=DATA / "gb_binarized.csv",
+        default=DATA / "gb_processed.csv",
         help="File with Grambank features.",
     )
     parser.add_argument(
         "-counts_path",
         type=Path,
-        default=DATA / "convenience_counts.json",
+        default=DATA / "convenience/convenience_counts.json",
         help="File with language counts from previous work.",
     )
     parser.add_argument(
@@ -62,8 +62,9 @@ def create_arg_parser():
         "-f",
         "--frame_path",
         type=Path,
-        default=DATA / "frames/langs_gb.txt",
-        help="Frame to sample from as a text file with one Glottocode per line.",
+       # default=DATA / "frames/langs_gb.txt",
+        help="Frame to sample from as a text file with one Glottocode per line. If left empty, the sampling frame"
+             "will be all languages in the specified language distance file.",
     )
     parser.add_argument(
         "-n_cpu",
@@ -124,7 +125,10 @@ def main():
     # n runs to get an average for the random methods with a different seed per run
     RUNS = args.rand_runs
     RANGE = [args.s] if args.s == args.e else range(args.s, args.e + 1, args.st)
-    N = sorted([g_code.strip() for g_code in args.frame_path.read_text().split("\n")])
+    if args.frame_path:
+        N = sorted([g_code.strip() for g_code in args.frame_path.read_text().split("\n")])
+    else:
+        N = sorted(dist_df.columns.to_list())
     del gb
 
     # method with n runs

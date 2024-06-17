@@ -1,6 +1,5 @@
 - [ ] make script that prepares all gb, wals, distance data and make sure the 'drop col' stuff is not necessary anymore. --> please check compute_distances.py carefully when doing this xx
-- [ ] clean up `evaluation` folder
-- [ ] make sure `evaluation/experiments/*.csv` can be pushed (gitignore) once final experiment results are done!
+- [x] clean up `evaluation` folder
 - [ ] add proper instructions to readme + clean up readme
 - [ ] check TODO comments in code
 - [x] deal with logical dependencies as a result of binarisation
