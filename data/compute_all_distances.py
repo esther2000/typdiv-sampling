@@ -63,14 +63,22 @@ def create_arg_parser():
         default=DATA / "gb_lang_feat_vals.csv",
         help="Path to Grambank file with features per language.",
     )
+    parser.add_argument(
+        "-f",
+        "--features",
+       # default=DATA / "feature_subset_example.txt",
+        help="Path to Grambank file with the GB feature IDs (one per line) that should be included."
+             "See example: data/feature_subset_example.txt",
+    )
+
     args = parser.parse_args()
     return args
 
 
-def binarize(gb_df, mv_feats):
+def binarize(gb_df, selected_mv_feats):
     """Binarize multi-value features
     TODO: this could probably be done more elegantly but it works"""
-    for feat in mv_feats:
+    for feat in selected_mv_feats:
         gb_df[f"{feat}_1"] = (
             (gb_df[f"{feat}"] == "1").astype(int).astype(str)
         )  # label 1
@@ -95,7 +103,7 @@ def binarize(gb_df, mv_feats):
         gb_df.loc[gb_df[f"{feat}"] == "no_cov", f"{feat}_2"] = "no_cov"
 
     # remove original multi-value feature columns
-    gb_df = gb_df.drop(columns=mv_feats)
+    gb_df = gb_df.drop(columns=selected_mv_feats)
 
     return gb_df, gb_df.columns.to_list()[2:]
 
@@ -135,9 +143,16 @@ def main():
     gb_matrix = pd.read_csv(args.gb_file)
     gb_feats = [x for x in gb_matrix.columns.to_list() if x.startswith("GB")]
 
+    # Optional: include only a subset of features
+    if args.features:
+        with open(args.features) as feat_file:
+            incl_feats = [x.rstrip() for x in feat_file.readlines()]
+        gb_matrix = gb_matrix[['Unnamed: 0', 'Lang_ID'] + incl_feats]
+        gb_feats = incl_feats
+
     # Optional: binarize multi-value features
     if args.binarize:
-        gb_matrix, gb_feats = binarize(gb_matrix, mv_feats)
+        gb_matrix, gb_feats = binarize(gb_matrix, set(mv_feats).intersection(gb_feats))
 
     # Optional: crop langs according to feature coverage
     if args.crop_perc:  # specify minimum % coverage per lang
