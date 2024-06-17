@@ -46,6 +46,12 @@ def create_arg_parser():
         help="Option for normalizing distances (min-max)",
     )
     parser.add_argument(
+        "-c",
+        "--crop_perc",
+        type=float,
+        help="Option: specify minimum feature coverage per language",
+    )
+    parser.add_argument(
         "-g",
         "--gb_file",
         default=DATA / "gb_lang_feat_vals.csv",
@@ -92,6 +98,17 @@ def normalize(x, x_min, x_max):
     return (x - x_min) / (x_max - x_min)
 
 
+def crop(gb_df, perc):
+    """Remove languages from dataframe that do not have at least <perc>% feature coverage"""
+    tot_feats = len([x for x in gb_df.columns if x.startswith('GB')])
+    for i, row in gb_df.iterrows():
+        no_data = row.to_list().count('no_cov') + row.to_list().count('?')
+        if (tot_feats - no_data) < (perc * tot_feats):
+            gb_df = gb_df.drop(i)
+
+    return gb_df
+
+
 def main():
     args = create_arg_parser()
     mv_feats = ["GB024", "GB025", "GB065", "GB130", "GB193", "GB203"]
@@ -103,6 +120,11 @@ def main():
     # Optional: binarize multi-value features
     if args.binarize:
         gb_matrix, gb_feats = binarize(gb_matrix, mv_feats)
+        gb_matrix.to_csv(args.data_output_file)
+
+    # Optional: crop langs according to feature coverage
+    if args.crop_perc:  # specify minimum % coverage per lang
+        gb_matrix = crop(gb_matrix, args.crop_perc)
         gb_matrix.to_csv(args.data_output_file)
 
     # Make vector per language
