@@ -138,17 +138,17 @@ def main():
     # Optional: binarize multi-value features
     if args.binarize:
         gb_matrix, gb_feats = binarize(gb_matrix, mv_feats)
-        gb_matrix.to_csv(args.data_output_file)
 
     # Optional: crop langs according to feature coverage
     if args.crop_perc:  # specify minimum % coverage per lang
         gb_matrix = crop(gb_matrix, args.crop_perc)
-        gb_matrix.to_csv(args.data_output_file)
 
     # Optional: remove macrolanguages
     if args.remove_macro:
         gb_matrix = filter_macrolangs(gb_matrix)
-        gb_matrix.to_csv(args.data_output_file)
+
+    # Save (processed) Grambank version
+    gb_matrix.to_csv(args.data_output_file)
 
     # Make vector per language
     lang_vecs = {
