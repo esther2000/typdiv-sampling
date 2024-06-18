@@ -1,0 +1,205 @@
+name;glottocode
+Acehnese (Arabic script);achi1257
+Acehnese (Latin script);achi1257
+Mesopotamian Arabic;meso1252
+Ta’izzi-Adeni Arabic;taiz1242
+Tunisian Arabic;tuni1259
+Afrikaans;afri1274
+South Levantine Arabic;sout3123
+Akan;akan1250
+Amharic;amha1245
+North Levantine Arabic;nort3139
+Modern Standard Arabic;stan1318
+Modern Standard Arabic (Romanized);stan1318
+Najdi Arabic;najd1235
+Moroccan Arabic;moro1292
+Egyptian Arabic;egyp1253
+Assamese;assa1263
+Asturian;astu1245
+Awadhi;awad1243
+Central Aymara;cent2142
+South Azerbaijani;sout2697
+North Azerbaijani;nort2697
+Bashkir;bash1264
+Bambara;bamb1269
+Balinese;bali1278
+Belarusian;bela1254
+Bemba;bemb1257
+Bengali;beng1280
+Bhojpuri;bhoj1244
+Banjar (Arabic script);banj1239
+Banjar (Latin script);banj1239
+Standard Tibetan;tibe1272
+Bosnian;sout1528
+Buginese;bugi1244
+Bulgarian;bulg1262
+Catalan;stan1289
+Cebuano;cebu1242
+Czech;czec1258
+Chokwe;chok1245
+Central Kurdish;cent1972
+Crimean Tatar;crim1257
+Welsh;wels1247
+Danish;dani1285
+German;stan1295
+Southwestern Dinka;sout2832
+Dyula;dyul1238
+Dzongkha;dzon1239
+Greek;mode1248
+English;stan1293
+Esperanto;espe1235
+Estonian;esto1258
+Basque;basq1248
+Ewe;ewee1241
+Faroese;faro1244
+Fijian;fiji1243
+Finnish;finn1318
+Fon;fonn1241
+French;stan1290
+Friulian;friu1240
+Nigerian Fulfulde;nige1253
+Scottish Gaelic;scot1245
+Irish;iris1253
+Galician;gali1258
+Guarani;tupi1277
+Gujarati;guja1252
+Haitian Creole;hait1244
+Hausa;haus1257
+Hebrew;hebr1245
+Hindi;hind1269
+Chhattisgarhi;chha1249
+Croatian;sout1528
+Hungarian;hung1274
+Armenian;nucl1235
+Igbo;nucl1417
+Ilocano;ilok1237
+Indonesian;indo1316
+Icelandic;icel1247
+Italian;ital1282
+Javanese;java1254
+Japanese;nucl1643
+Kabyle;kaby1243
+Jingpho;kach1280
+Kamba;kamb1297
+Kannada;nucl1305
+Kashmiri (Arabic script);kash1277
+Kashmiri (Devanagari script);kash1277
+Georgian;nucl1302
+Central Kanuri (Arabic script);cent2050
+Central Kanuri (Latin script);cent2050
+Kazakh;kaza1248
+Kabiyè;kabi1261
+Kabuverdianu;kabu1256
+Khmer;cent1989
+Kikuyu;kiku1240
+Kinyarwanda;kiny1244
+Kyrgyz;kirg1245
+Kimbundu;kimb1241
+Northern Kurdish;nort2641
+Kikongo;east2782
+Korean;kore1280
+Lao;laoo1244
+Ligurian;ligu1248
+Limburgish;limb1263
+Lingala;ling1263
+Lithuanian;lith1251
+Lombard;lomb1257
+Latgalian;east2282
+Luxembourgish;luxe1243
+Luba-Kasai;luba1249
+Ganda;gand1255
+Luo;luok1236
+Mizo;lush1249
+Standard Latvian;latv1249
+Magahi;maga1260
+Maithili;mait1250
+Malayalam;mala1464
+Marathi;mara1378
+Minangkabau (Arabic script);mina1268
+Minangkabau (Latin script);mina1268
+Macedonian;mace1250
+Plateau Malagasy;plat1254
+Maltese;malt1254
+Meitei (Bengali script);mani1292
+Halh Mongolian;halh1238
+Mossi;moss1236
+Maori;maor1246
+Burmese;nucl1310
+Dutch;dutc1256
+Norwegian Nynorsk;norw1258
+Norwegian Bokmål;norw1259
+Nepali;nepa1254
+Northern Sotho;pedi1238
+Nuer;nuer1246
+Nyanja;nyan1308
+Occitan;occi1239
+West Central Oromo;west2721
+Odia;oriy1255
+Pangasinan;pang1290
+Eastern Panjabi;panj1256
+Papiamento;papi1253
+Western Persian;west2369
+Polish;poli1260
+Portuguese;port1283
+Dari;dari1249
+Southern Pashto;sout2649
+Ayacucho Quechua;ayac1239
+Romanian;roma1327
+Rundi;rund1242
+Russian;russ1263
+Sango;sang1328
+Sanskrit;sans1269
+Santali;sant1410
+Sicilian;sici1248
+Shan;shan1277
+Sinhala;sinh1246
+Slovak;slov1269
+Slovenian;slov1268
+Samoan;samo1305
+Shona;shon1251
+Sindhi;sind1272
+Somali;soma1255
+Southern Sotho;sout2807
+Spanish;stan1288
+Tosk Albanian;tosk1239
+Sardinian;sard1257
+Serbian;sout1528
+Swati;swat1243
+Sundanese;sund1252
+Swedish;swed1254
+Swahili;swah1253
+Silesian;sile1253
+Tamil;tami1289
+Tatar;tata1255
+Telugu;telu1262
+Tajik;taji1245
+Tagalog;taga1270
+Thai;thai1261
+Tigrinya;tigr1271
+Tamasheq (Latin script);tama1365
+Tamasheq (Tifinagh script);tama1365
+Tok Pisin;tokp1240
+Tswana;tswa1253
+Tsonga;tson1249
+Turkmen;turk1304
+Tumbuka;tumb1250
+Turkish;nucl1301
+Twi;nucl1301
+Central Atlas Tamazight;cent2194
+Uyghur;uigh1240
+Ukrainian;ukra1253
+Umbundu;umbu1257
+Urdu;urdu1245
+Northern Uzbek;nort2690
+Venetian;vene1258
+Vietnamese;viet1252
+Waray;wara1300
+Wolof;nucl1347
+Xhosa;xhos1239
+Eastern Yiddish;east2295
+Yoruba;yoru1245
+Yue Chinese;yuec1235
+Chinese (Simplified);mand1415
+Chinese (Traditional);mand1415
+Standard Malay;stan1306
+Zulu;zulu1248
