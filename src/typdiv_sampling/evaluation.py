@@ -91,10 +91,15 @@ class Evaluator:
             vals_with_missing, vals_without_missing = [], []
             for lang in sample:
                 fv = self.gb_by_lang[lang][i]
-                vals_with_missing.append(fv)
+                vals_with_missing.append(str(fv))
                 if fv != "?":
-                    vals_without_missing.append(fv)
-            ents_with_missing.append(entropy("".join(vals_with_missing)))
+                    vals_without_missing.append(str(fv))
+
+            try:
+                ents_with_missing.append(entropy("".join(vals_with_missing)))
+            except:
+                print(vals_with_missing)
+                print(sample)
             ents_without_missing.append(entropy("".join(vals_without_missing)))
             fvis.append(fvi("".join(vals_without_missing)))
 
