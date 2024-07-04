@@ -67,8 +67,13 @@ def create_arg_parser():
         "-f",
         "--features",
        # default=DATA / "feature_subset_example.txt",
-        help="Path to Grambank file with the GB feature IDs (one per line) that should be included."
+        help="Path to file with the GB feature IDs (one per line) that should be included."
              "See example: data/feature_subset_example.txt",
+    )
+    parser.add_argument(
+        "-l",
+        "--select_langs",
+        help="Path to file with the language glottocodes (one per line) that should be included.",
     )
 
     args = parser.parse_args()
@@ -135,6 +140,15 @@ def filter_macrolangs(gb_df):
     return gb_df
 
 
+def filter_langs(gb_df, langs):
+    """Filter out languages from list"""
+    for i, row in gb_df.iterrows():
+        if row["Lang_ID"] not in langs:
+            gb_df = gb_df.drop(i)
+
+    return gb_df
+
+
 def main():
     args = create_arg_parser()
     mv_feats = ["GB024", "GB025", "GB065", "GB130", "GB193", "GB203"]
@@ -150,17 +164,23 @@ def main():
         gb_matrix = gb_matrix[['Unnamed: 0', 'Lang_ID'] + incl_feats]
         gb_feats = incl_feats
 
+    # Optional: include only a subset of languages
+    if args.select_langs:
+        with open(args.select_langs) as lang_file:
+            incl_langs = [x.rstrip() for x in lang_file.readlines()]
+        gb_matrix = filter_langs(gb_matrix, incl_langs)
+
     # Optional: binarize multi-value features
     if args.binarize:
         gb_matrix, gb_feats = binarize(gb_matrix, set(mv_feats).intersection(gb_feats))
 
-    # Optional: crop langs according to feature coverage
-    if args.crop_perc:  # specify minimum % coverage per lang
-        gb_matrix = crop(gb_matrix, args.crop_perc)
-
     # Optional: remove macrolanguages
     if args.remove_macro:
         gb_matrix = filter_macrolangs(gb_matrix)
+
+    # Optional: crop langs according to feature coverage
+    if args.crop_perc:  # specify minimum % coverage per lang
+        gb_matrix = crop(gb_matrix, args.crop_perc)
 
     # Save (processed) Grambank version
     gb_matrix.to_csv(args.data_output_file)
@@ -189,10 +209,9 @@ def main():
 
     sim_df.to_csv(args.output_dist_file)
 
-    #with open('gb_frame-bnrc75.txt', 'w') as frame:  # TODO: add this formally? (output depends on options!)
+    #with open('gb_frame-bnrc75.txt', 'w') as frame:
       #  for l in langs:
            # frame.write(l+"\n")
-
 
 if __name__ == "__main__":
     main()
