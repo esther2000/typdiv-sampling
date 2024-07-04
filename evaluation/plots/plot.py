@@ -59,8 +59,9 @@ def main():
         "RandomGenus*",
     ]
 
-    OPACITY = 0.7
-    COLORS = ["steelblue", "#7D3C98", "chartreuse", "#F4D03F", "red", "#D35400"]
+    OPACITY = 0.8
+    # Colors from Tol's scheme: https://davidmathlogic.com/colorblind/#%23332288-%23117733-%2344AA99-%2388CCEE-%23DDCC77-%23CC6677-%23AA4499-%23882255
+    COLORS = ["#332288", "#DDCC77", "#CC6677", "#117733", "#88CCEE", "#882255"]
     Y_LABELS = {
         "entropy_with_missing": "Entropy (H)",
         "entropy_without_missing": "Entropy (H)",
@@ -92,7 +93,7 @@ def main():
             # .mark_boxplot(extent="min-max")
             .encode(
                 x=alt.X("k", title="Sample size"),
-                y=alt.Y(metric, title=Y_LABELS[metric]),
+                y=alt.Y(metric, title=Y_LABELS[metric], scale=alt.Scale(domain=[0, 1])),
                 color=alt.Color("Method", legend=legend, sort=legend_order).scale(
                     range=COLORS
                 ),
@@ -104,7 +105,7 @@ def main():
             .mark_point(filled=True, opacity=OPACITY)
             .encode(
                 x=alt.X("k", title="Sample size"),
-                y=alt.Y(f"mean({metric})", title=Y_LABELS[metric]),
+                y=alt.Y(f"mean({metric})", title=Y_LABELS[metric], scale=alt.Scale(domain=[0, 1])),
                 color=alt.Color("Method", legend=legend, sort=legend_order).scale(
                     range=COLORS
                 ),
@@ -117,7 +118,7 @@ def main():
 
     combined = alt.vconcat(top, bottom)
 
-    combined.save(f"plots/intrinsic-eval-vis.pdf")
+    combined.save(args.outfile)
 
 
 if __name__ == "__main__":
