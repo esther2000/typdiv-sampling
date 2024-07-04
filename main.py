@@ -40,7 +40,7 @@ def create_arg_parser():
         "-d",
         "--dist_path",
         type=Path,
-        default=DATA / "gb_vec_sim.csv",
+        default=DATA / "gb_lang_dists.csv",
         help="File with pairwise language distances.",
     )
     parser.add_argument(

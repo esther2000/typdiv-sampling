@@ -87,7 +87,7 @@ def create_arg_parser():
     parser.add_argument(
         "-e",
         type=int,
-        default=195,
+        default=140,
         help="End of the range of ks to test (inclusive).",
     )
     parser.add_argument(

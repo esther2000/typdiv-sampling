@@ -3,7 +3,7 @@ from collections import defaultdict, Counter
 import random
 import json
 
-BIBLE_PATH = '/Users/jk31ds/Desktop/bible_corpus'
+BIBLE_PATH = ''  # path to bible corpus
 LANG_CODES = 'langcodes_Latn.txt'
 C_SIZE = 2000
 TEST_SIZE = 1000

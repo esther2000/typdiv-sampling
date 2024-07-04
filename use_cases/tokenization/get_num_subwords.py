@@ -42,7 +42,7 @@ def main():
         verses_l1 = [verse.rstrip() for verse in v1]
 
     # get glottocodes
-    iso = args.verses[7:10]
+    iso = args.verses[-7:-4]
     gltc_df = pd.read_csv('../../data/languoid.csv')
     gltc = gltc_df[gltc_df['iso639P3code'] == iso]['id'].to_list()[0]
 
