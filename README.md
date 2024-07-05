@@ -24,28 +24,26 @@ If you use any contents from this repository for your work, we kindly ask you to
 ```
 
 
----
 
 # Installation and data
-
-```
-pip install git+https://github.com/esther2000/typdiv-sampling.git
+```sh
+git clone https://github.com/esther2000/typdiv-sampling
+cd typdiv-sampling
+pip install .
 ```
 
 Alternatively, with visualization support:
-```
-pip install "git+https://github.com/esther2000/typdiv-sampling.git[vis]"
+```sh
+pip install ".[vis]"
 ```
 
 <br>
 
 The data can be downloaded and prepared using the following script:
 
+```sh
+./prepare-data.sh
 ```
-bash prepare-data.sh
-```
-
----
 
 # Example usage
 
@@ -99,7 +97,6 @@ evaluator.evaluate_sample(sample)
 An example of evaluation usage in practice is found in `use_cases/next-best.ipynb`.
 
 
----
 ## Reproducibility
 
 The results and visualizations from the paper can be reproduced with the following scripts or notebooks:
@@ -113,4 +110,10 @@ The results and visualizations from the paper can be reproduced with the followi
 * UD expansion case study (Table 3, page 19): `use_cases/dataset_expansion/next-best.ipynb`
 * Geographical distance plot (Figure 7, page 20):  `use_cases/geo_dist/visualize-dist.ipynb`
 
----
+# Data Licenses
+- [Grambank](https://grambank.clld.org/) is licensed under a [Creative Commons 4.0 BY International License](https://creativecommons.org/licenses/by/4.0/).
+- [WALS](https://wals.info/) is licensed under a [Creative Commons 4.0 BY International License](https://creativecommons.org/licenses/by/4.0/).
+- [Glottolog](https://github.com/glottolog/glottolog) is licensed under a [Creative Commons 4.0 BY International License](https://creativecommons.org/licenses/by/4.0/).
+
+# License
+The code and data in this repo are licensed under a [Creative Commons 4.0 BY International License](https://creativecommons.org/licenses/by/4.0/).
