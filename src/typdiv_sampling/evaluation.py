@@ -58,7 +58,7 @@ def fvo(pairs: list, feats: dict) -> float:
 
 @dataclass(frozen=True)
 class Result:
-    run: int
+    run: int | None
     ent_score_with: float
     ent_score_without: float
     fvi_score: float
@@ -76,7 +76,7 @@ class Evaluator:
         self.cache: dict[str, Result] = dict()
         self.distances = distances
 
-    def evaluate_sample(self, sample: list[Language], run: int) -> Result:
+    def evaluate_sample(self, sample: list[Language], run: int | None = None) -> Result:
         if (sample_key := "".join(sorted(sample))) and sample_key in self.cache:
             return self.cache[sample_key]
 
@@ -97,7 +97,7 @@ class Evaluator:
 
             try:
                 ents_with_missing.append(entropy("".join(vals_with_missing)))
-            except:
+            except Exception:
                 print(vals_with_missing)
                 print(sample)
             ents_without_missing.append(entropy("".join(vals_without_missing)))
