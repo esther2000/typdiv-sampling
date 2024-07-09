@@ -5,21 +5,19 @@
 </p>
 
 > **Abstract:**
-> Beyond individual languages, multilingual natural language processing (NLP) research increasingly aims to develop models that perform well across languages generally.
-> However, evaluating these systems on all the world's languages is practically infeasible.
-> Previous work argues that generalizable multilingual evaluation sets should contain languages with diverse typological properties.
-> However, `typologically diverse' language samples have been found to vary considerably in this regard, and popular sampling methods are flawed and inconsistent.
-> We present a language sampling framework for selecting highly typologically diverse languages given a sampling frame, informed by language typology.
-> We compare sampling methods with a range of metrics and find that our systematic sampling method consistently retrieves more typologically diverse language selections than previous methods in NLP.
-> Moreover, we provide evidence that this affects generalizability in multilingual model evaluation, emphasizing the importance of diverse language sampling in NLP evaluation.
+> Beyond individual languages, multilingual natural language processing (NLP) research increasingly aims to develop models that perform well across languages generally. However, evaluating these systems on all the world’s languages is practically infeasible. To attain generalizability, representative language sampling is essential. Previous work argues that generalizable multilingual evaluation sets should contain languages with diverse typological properties. However, ‘typologically diverse’ language samples have been found to vary considerably in this regard, and popular sampling methods are flawed and inconsistent. We present a language sampling framework for selecting highly typologically diverse languages given a sampling frame, informed by language typology. We compare sampling methods with a range of metrics and find that our systematic methods consistently retrieve more typologically diverse language selections than previous methods in NLP. Moreover, we provide evidence that this affects generalizability in multilingual model evaluation, emphasizing the importance of diverse language sampling in NLP evaluation.
 
-This repository contains the implementations, results and visualizations for the paper *A Principled Framework for Evaluating on Typologically Diverse Languages*.
+This repository contains the implementations, results and visualizations for the paper [*A Principled Framework for Evaluating on Typologically Diverse Languages*](https://arxiv.org/abs/2407.05022).
 If you use any contents from this repository for your work, we kindly ask you to cite our paper:
 ```
-@unpublished{typdiv-sampling,
- author = "Esther Ploeger and Wessel Poelman and Andreas Holck Høeg-Petersen and Anders Schlichtkrull and Miryam de Lhoneux and Johannes Bjerva",
- title = "A Principled Framework for Evaluating on Typologically Diverse Languages",
- year="2024",
+@misc{ploeger2024principledframework,
+      title={A Principled Framework for Evaluating on Typologically Diverse Languages}, 
+      author={Esther Ploeger and Wessel Poelman and Andreas Holck Høeg-Petersen and Anders Schlichtkrull and Miryam de Lhoneux and Johannes Bjerva},
+      year={2024},
+      eprint={2407.05022},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2407.05022}, 
 }
 ```
 
