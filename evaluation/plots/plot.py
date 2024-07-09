@@ -40,8 +40,8 @@ def main():
 
     df["Method"] = df["Method"].map(
         {
-            "mmdp": "MaxMin",
-            "mdp": "MaxSum",
+            "maxmin": "MaxMin",
+            "maxsum": "MaxSum",
             "random_genus": "RandomGenus*",
             "random_family": "RandomFamily*",
             "convenience": "Convenience",

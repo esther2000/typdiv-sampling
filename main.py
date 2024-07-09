@@ -19,7 +19,7 @@ def create_arg_parser():
         "--sampling_method",
         nargs="+",
         type=str,
-        default=["mdp"],
+        default=["maxsum"],
         help=f"Sampling method(s), choose from: {','.join(METHODS)}.",
     )
     parser.add_argument(

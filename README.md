@@ -62,11 +62,11 @@ sampler = Sampler(
     wals_path=wals_path,  # WALS csv file.
     counts_path=counts_path,  # Convenience count file.
 )
-sampler.sample_mdp(frame, k)
+sampler.sample_maxsum(frame, k)
 > ['kore1280', 'russ1263', 'stan1290']
 ```
 
-Sampling methods include: `sample_mdp()` (MaxSum), `sample_mmdp()` (MaxMin) and several baselines: `sample_random()`, `sample_convenience()`, `sample_random_family()`, `sample_random_genus()`.
+Sampling methods include: `sample_maxsum()` (MaxSum), `sample_maxmin()` (MaxMin) and several baselines: `sample_random()`, `sample_convenience()`, `sample_random_family()`, `sample_random_genus()`.
 
 An example of sampling usage in practice is found in: `evaluation/experiment.py`.
 

@@ -1,6 +1,6 @@
 """
 Description:    Visualize sampling algorithms in 2D space
-Note that sample_mdp and sample_mmdp are duplicated because there are output format differences
+Note that sample_maxsum and sample_maxmin are duplicated because there are output format differences
 """
 
 import argparse
@@ -30,8 +30,8 @@ def create_arg_parser():
         "-s",
         "--sampling_method",
         type=str,
-        default="typ_mdp",
-        help="Sampling method, choose from: random_family, random_genus, typ_mdp, typ_mmdp",  # TODO: add random?
+        default="typ_maxsum",
+        help="Sampling method, choose from: random_family, random_genus, typ_maxsum, typ_maxmin",  # TODO: add random?
     )
     parser.add_argument(
         "-k",
@@ -43,7 +43,7 @@ def create_arg_parser():
     return parser.parse_args()
 
 
-def sample_mdp(max_langs, dist_mtx):
+def sample_maxsum(max_langs, dist_mtx):
     """
     Maximum Diversity Problem
     Sample k languages from N, where we iteratively add the
@@ -64,7 +64,7 @@ def sample_mdp(max_langs, dist_mtx):
     return langs
 
 
-def sample_mmdp(max_langs, dist_mtx):
+def sample_maxmin(max_langs, dist_mtx):
     """
     MaxMin Diversity Problem
     Sample k languages from N, where we iteratively add the
@@ -94,10 +94,10 @@ def main():
     dist_dict = get_dist_matrix(V)
 
     # sample
-    if args.sampling_method == "typ_mdp":
-        sample = sample_mdp(args.k_langs, dist_dict)
-    elif args.sampling_method == "typ_mmdp":
-        sample = sample_mmdp(args.k_langs, dist_dict)
+    if args.sampling_method == "typ_maxsum":
+        sample = sample_maxsum(args.k_langs, dist_dict)
+    elif args.sampling_method == "typ_maxmin":
+        sample = sample_maxmin(args.k_langs, dist_dict)
     else:
         print("Error: Unknown sampling method.")
 

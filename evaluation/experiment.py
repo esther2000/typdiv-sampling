@@ -134,8 +134,8 @@ def main():
     # method with n runs
     experiments = [
         # deterministic
-        ("mdp", 1),
-        ("mmdp", 1),
+        ("maxsum", 1),
+        ("maxmin", 1),
         # random
         ("convenience", RUNS),
         ("random", RUNS),

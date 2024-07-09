@@ -10,7 +10,7 @@ from typdiv_sampling.distance import get_first_point, get_summed_dist_dict
 
 Language = str
 SamplingFunc = Callable[[list[Language], int, int], list[Language]]
-METHODS = ["random", "random_family", "random_genus", "mdp", "mmdp", "convenience"]
+METHODS = ["random", "random_family", "random_genus", "maxsum", "maxmin", "convenience"]
 
 
 class Sampler:
@@ -31,7 +31,7 @@ class Sampler:
         self._wals_df = None
         self._counts = None
 
-    def sample_mdp(
+    def sample_maxsum(
         self, frame: list[Language], k: int, random_seed: int | None = None
     ) -> list[Language]:
         """
@@ -54,7 +54,7 @@ class Sampler:
 
         return sorted([id2lang[i] for i in langs])
 
-    def sample_mmdp(
+    def sample_maxmin(
         self, frame: list[Language], k: int, random_seed: int | None = None
     ) -> list[Language]:
         """
