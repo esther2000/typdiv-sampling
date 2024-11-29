@@ -2,10 +2,11 @@
 Note: this code is copied from plot.ipynb to provide a non-notebook version of the code.
 """
 
-import pandas as pd
-import altair as alt
-from pathlib import Path
 import argparse
+from pathlib import Path
+
+import altair as alt
+import pandas as pd
 
 CWD = Path(__file__).parent
 
@@ -105,7 +106,11 @@ def main():
             .mark_point(filled=True, opacity=OPACITY)
             .encode(
                 x=alt.X("k", title="Sample size"),
-                y=alt.Y(f"mean({metric})", title=Y_LABELS[metric], scale=alt.Scale(domain=[0, 1])),
+                y=alt.Y(
+                    f"mean({metric})",
+                    title=Y_LABELS[metric],
+                    scale=alt.Scale(domain=[0, 1]),
+                ),
                 color=alt.Color("Method", legend=legend, sort=legend_order).scale(
                     range=COLORS
                 ),

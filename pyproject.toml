@@ -31,12 +31,16 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-# TODO: Split into viz and dev dependencies
+dev = ["pytest", "pre-commit", "ruff"]
+
 vis = [
-    "pytest",
-    "pyarrow",
     "altair",
     "vl-convert-python",
+    "geopy",
+    "geopandas",
+    "shapely",
+    "tokenizers",
+    "pyarrow",
     "fiject @ git+https://github.com/bauwenst/fiject.git",
 ]
 

@@ -10,6 +10,7 @@ import warnings
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+
 from typdiv_sampling.distance import (
     dist_score,
     get_dist_matrix,

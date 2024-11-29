@@ -1,4 +1,5 @@
 import json
+
 import pandas as pd
 
 """
@@ -19,6 +20,6 @@ wals_frame = set(wals_df["Glottocode"].to_list())
 
 int_frame = convenience_frame & wals_frame & gb_cropped_frame
 
-with open("intersection-frame.txt", 'w') as outfile:
-    for l in int_frame:
-        outfile.write(l+"\n")
+with open("intersection-frame.txt", "w") as outfile:
+    for lang in int_frame:
+        outfile.write(lang + "\n")

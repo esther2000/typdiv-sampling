@@ -157,3 +157,5 @@ cython_debug/
 # 100mb file
 data/gb_lang_dists.csv
 data/gb_processed.csv
+
+.python-version

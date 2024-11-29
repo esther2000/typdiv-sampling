@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+
 from typdiv_sampling import Sampler
 
 CWD = Path(__file__).parent

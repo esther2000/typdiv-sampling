@@ -11,19 +11,21 @@ This repository contains the implementations, results and visualizations for the
 If you use any contents from this repository for your work, we kindly ask you to cite our paper:
 ```
 @misc{ploeger2024principledframework,
-      title={A Principled Framework for Evaluating on Typologically Diverse Languages}, 
+      title={A Principled Framework for Evaluating on Typologically Diverse Languages},
       author={Esther Ploeger and Wessel Poelman and Andreas Holck Høeg-Petersen and Anders Schlichtkrull and Miryam de Lhoneux and Johannes Bjerva},
       year={2024},
       eprint={2407.05022},
       archivePrefix={arXiv},
       primaryClass={cs.CL},
-      url={https://arxiv.org/abs/2407.05022}, 
+      url={https://arxiv.org/abs/2407.05022},
 }
 ```
 
 
 
 # Installation and data
+The package is tested with Python 3.10.
+
 ```sh
 git clone https://github.com/esther2000/typdiv-sampling
 cd typdiv-sampling
@@ -33,6 +35,13 @@ pip install .
 Alternatively, with visualization support:
 ```sh
 pip install ".[vis]"
+```
+
+Or for development:
+```sh
+pip install ".[dev]"
+pre-commit install
+pre-commit run --all-files
 ```
 
 <br>
@@ -84,11 +93,11 @@ sample = ['kore1280', 'russ1263', 'stan1290']
 evaluator.evaluate_sample(sample)
 > Result(
     run=None, # Optional result to keep track of averages across runs, unused here.
-    ent_score_with=0.5374, 
+    ent_score_with=0.5374,
     ent_score_without=0.4954,
     fvi_score=0.7686,
-    mpd_score=0.7836, 
-    fvo_score=0.6302, 
+    mpd_score=0.7836,
+    fvo_score=0.6302,
     sample={'russ1263', 'kore1280', 'stan1290'},
 )
 ```

@@ -5,10 +5,10 @@ Usage:          python compute_all_distances.py -g <GRAMBANK_FOLDER> -o <OUTPUT_
 """
 
 import argparse
+from pathlib import Path
 
 import pandas as pd
 from sklearn.metrics.pairwise import nan_euclidean_distances
-from pathlib import Path
 
 # location of this file, so it does not matter from where this script is called
 # TODO: move this to a constants.py or something since it's copy pasted atm
@@ -66,9 +66,9 @@ def create_arg_parser():
     parser.add_argument(
         "-f",
         "--features",
-       # default=DATA / "feature_subset_example.txt",
+        # default=DATA / "feature_subset_example.txt",
         help="Path to file with the GB feature IDs (one per line) that should be included."
-             "See example: data/feature_subset_example.txt",
+        "See example: data/feature_subset_example.txt",
     )
     parser.add_argument(
         "-l",
@@ -119,9 +119,9 @@ def normalize(x, x_min, x_max):
 
 def crop(gb_df, perc):
     """Remove languages from dataframe that do not have at least <perc>% feature coverage"""
-    tot_feats = len([x for x in gb_df.columns if x.startswith('GB')])
+    tot_feats = len([x for x in gb_df.columns if x.startswith("GB")])
     for i, row in gb_df.iterrows():
-        no_data = row.to_list().count('no_cov') + row.to_list().count('?')
+        no_data = row.to_list().count("no_cov") + row.to_list().count("?")
         if (tot_feats - no_data) < (perc * tot_feats):
             gb_df = gb_df.drop(i)
 
@@ -129,9 +129,11 @@ def crop(gb_df, perc):
 
 
 def filter_macrolangs(gb_df):
-    """Filter out macrolanguages (e.g. Central pacific linkage) """
-    glottolog_data = pd.read_csv(DATA/"languoid.csv")
-    child_langs = {row['id']: row['child_language_count'] for _, row in glottolog_data.iterrows()}
+    """Filter out macrolanguages (e.g. Central pacific linkage)"""
+    glottolog_data = pd.read_csv(DATA / "languoid.csv")
+    child_langs = {
+        row["id"]: row["child_language_count"] for _, row in glottolog_data.iterrows()
+    }
 
     for i, row in gb_df.iterrows():
         if child_langs[row["Lang_ID"]] > 0:
@@ -161,7 +163,7 @@ def main():
     if args.features:
         with open(args.features) as feat_file:
             incl_feats = [x.rstrip() for x in feat_file.readlines()]
-        gb_matrix = gb_matrix[['Unnamed: 0', 'Lang_ID'] + incl_feats]
+        gb_matrix = gb_matrix[["Unnamed: 0", "Lang_ID"] + incl_feats]
         gb_feats = incl_feats
 
     # Optional: include only a subset of languages
@@ -201,7 +203,9 @@ def main():
     sim_matrix = nan_euclidean_distances(vecs, vecs)
 
     # Write to file
-    sim_df = pd.DataFrame(sim_matrix, columns=langs, index=langs).fillna(0)  # NOTE: 0 for maximisation only!
+    sim_df = pd.DataFrame(sim_matrix, columns=langs, index=langs).fillna(
+        0
+    )  # NOTE: 0 for maximisation only!
     if args.normalize:
         sim_df = sim_df.map(
             normalize, x_min=sim_df.min().min(), x_max=sim_df.max().max()
@@ -209,9 +213,10 @@ def main():
 
     sim_df.to_csv(args.output_dist_file)
 
-    #with open('gb_frame-bnrc75.txt', 'w') as frame:
-      #  for l in langs:
-           # frame.write(l+"\n")
+    # with open('gb_frame-bnrc75.txt', 'w') as frame:
+    #  for l in langs:
+    # frame.write(l+"\n")
+
 
 if __name__ == "__main__":
     main()

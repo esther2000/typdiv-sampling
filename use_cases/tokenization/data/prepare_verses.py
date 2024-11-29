@@ -1,52 +1,50 @@
 import os
-from collections import defaultdict, Counter
 import random
-import json
+from collections import Counter, defaultdict
 
-BIBLE_PATH = ''  # path to bible corpus
-LANG_CODES = 'langcodes_Latn.txt'
+BIBLE_PATH = ""  # path to bible corpus
+LANG_CODES = "langcodes_Latn.txt"
 C_SIZE = 2000
 TEST_SIZE = 1000
 
 
 def get_verse_ids(filename):
-    """ Given a bible file, return the verse IDs that it contains. """
+    """Given a bible file, return the verse IDs that it contains."""
     verses = set()
-    with open(os.path.join(BIBLE_PATH, filename), 'r') as bib:
+    with open(os.path.join(BIBLE_PATH, filename), "r") as bib:
         lines = bib.readlines()
     for line in lines[11:]:
-        verses.add(line.split()[0].replace('#', ''))
+        verses.add(line.split()[0].replace("#", ""))
 
     return verses
 
 
 def get_verse_text(filename, verse_id):
-    """ Return the text of a verse, given its bible file and verse ID"""
-    with open(os.path.join(BIBLE_PATH, filename), 'r') as bib:
+    """Return the text of a verse, given its bible file and verse ID"""
+    with open(os.path.join(BIBLE_PATH, filename), "r") as bib:
         lines = bib.readlines()
 
     for line in lines[11:]:
-        if line.split()[0].replace('#', '') == verse_id:
-            return ' '.join(line.split()[1:])
+        if line.split()[0].replace("#", "") == verse_id:
+            return " ".join(line.split()[1:])
 
 
 def bible_to_dict(biblefile):
     bible_dict = dict()
-    with open(f'{BIBLE_PATH}/{biblefile}', "r") as bf:
+    with open(f"{BIBLE_PATH}/{biblefile}", "r") as bf:
         lines = bf.readlines()
 
     for line in lines[11:]:
         v_id = line.split()[0]
-        v_text = ' '.join(line.split()[1:])
+        v_text = " ".join(line.split()[1:])
         bible_dict[v_id] = v_text
 
     return bible_dict
 
 
 def main():
-
     # Get lang codes (filtered with fam/typ coverage)
-    with open(LANG_CODES, 'r') as infile:
+    with open(LANG_CODES, "r") as infile:
         codes = [x.strip() for x in infile]
 
     # Get all bibles per lang
@@ -82,10 +80,10 @@ def main():
         verses = get_verse_ids(v)
         if len(verses.intersection(mcv)) == len(mcv):
             langs.append(k)
-    bibdict = {l: max_len_bib[l] for l in langs}
+    bibdict = {lang: max_len_bib[lang] for lang in langs}
 
     # Make directories
-    os.mkdir('verses')
+    os.mkdir("verses")
 
     # Split test and valid (randomly from most common)
     random.seed(0)
@@ -94,18 +92,18 @@ def main():
     n = -1
     lang_set = set(langs)
     for lang in lang_set:
-        n+=1
-        print('Working on: ', lang, n)
+        n += 1
+        print("Working on: ", lang, n)
         biblefile = bibdict[lang]
         verse_dict = bible_to_dict(biblefile)
 
         # write verses
-        outfile_lang_valid = f'verses/{lang}.txt'
-        with open(outfile_lang_valid, 'w') as out_lang:
+        outfile_lang_valid = f"verses/{lang}.txt"
+        with open(outfile_lang_valid, "w") as out_lang:
             for v_id in test_verse_ids:
                 v_text = verse_dict.get(v_id)
-                out_lang.write(v_text+'\n')
+                out_lang.write(v_text + "\n")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

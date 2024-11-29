@@ -6,6 +6,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
+
 from typdiv_sampling.evaluation import Evaluator, Result
 from typdiv_sampling.sampling import Sampler
 
@@ -62,9 +63,9 @@ def create_arg_parser():
         "-f",
         "--frame_path",
         type=Path,
-       # default=DATA / "frames/langs_gb.txt",
+        # default=DATA / "frames/langs_gb.txt",
         help="Frame to sample from as a text file with one Glottocode per line. If left empty, the sampling frame"
-             "will be all languages in the specified language distance file.",
+        "will be all languages in the specified language distance file.",
     )
     parser.add_argument(
         "-n_cpu",
@@ -126,7 +127,9 @@ def main():
     RUNS = args.rand_runs
     RANGE = [args.s] if args.s == args.e else range(args.s, args.e + 1, args.st)
     if args.frame_path:
-        N = sorted([g_code.strip() for g_code in args.frame_path.read_text().split("\n")])
+        N = sorted(
+            [g_code.strip() for g_code in args.frame_path.read_text().split("\n")]
+        )
     else:
         N = sorted(dist_df.columns.to_list())
     del gb

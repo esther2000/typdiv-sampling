@@ -1,4 +1,5 @@
 import argparse
+
 import pandas as pd
 from tokenizers import Tokenizer
 
@@ -22,14 +23,14 @@ def create_arg_parser():
         "--outfile",
         default="avg_num_subwords.csv",
         help="File to write output to.",
-        type=str
+        type=str,
     )
 
     return parser.parse_args()
 
 
 def remove_spec(tokens):
-    return [t for t in tokens if not t in ["[SEP]", "[CLS]"]]
+    return [t for t in tokens if t not in ["[SEP]", "[CLS]"]]
 
 
 def main():
@@ -38,13 +39,13 @@ def main():
     tok = Tokenizer.from_pretrained(args.tokenizer)
 
     # load verses
-    with open(args.verses, 'r') as v1:
+    with open(args.verses, "r") as v1:
         verses_l1 = [verse.rstrip() for verse in v1]
 
     # get glottocodes
     iso = args.verses[-7:-4]
-    gltc_df = pd.read_csv('../../data/languoid.csv')
-    gltc = gltc_df[gltc_df['iso639P3code'] == iso]['id'].to_list()[0]
+    gltc_df = pd.read_csv("../../data/languoid.csv")
+    gltc = gltc_df[gltc_df["iso639P3code"] == iso]["id"].to_list()[0]
 
     # tokenizer
     subwords_l1 = [remove_spec(t.tokens) for t in tok.encode_batch(verses_l1)]
@@ -56,14 +57,9 @@ def main():
             ns.append(len(x))
 
     # write to outfile
-    with open(args.outfile, 'a') as outfile:
-        outfile.write(f'{args.verses};{sum(ns)/len(ns)};{gltc}\n')
+    with open(args.outfile, "a") as outfile:
+        outfile.write(f"{args.verses};{sum(ns)/len(ns)};{gltc}\n")
 
 
 if __name__ == "__main__":
     main()
-
-
-
-
-

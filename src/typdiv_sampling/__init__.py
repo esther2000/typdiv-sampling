@@ -1,1 +1,1 @@
-from typdiv_sampling.sampling import Sampler, METHODS  # noqa
+from typdiv_sampling.sampling import Sampler, METHODS  # noqa: F401

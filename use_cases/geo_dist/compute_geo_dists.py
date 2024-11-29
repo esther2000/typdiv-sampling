@@ -1,8 +1,9 @@
 import argparse
-import pandas as pd
 import itertools
+
 import geopy.distance
 import numpy as np
+import pandas as pd
 
 
 def create_arg_parser():
@@ -37,24 +38,26 @@ def dict_to_matrix(dist_dict, langs):
 
 
 def main():
-
     args = create_arg_parser()
 
     # retrieve language coordinates from grambank
     gb_df = pd.read_csv("../../grambank/cldf/languages.csv")
-    coords = {row["ID"]: row[["Latitude", "Longitude"]].to_list() for _, row in gb_df.iterrows()}
+    coords = {
+        row["ID"]: row[["Latitude", "Longitude"]].to_list()
+        for _, row in gb_df.iterrows()
+    }
 
     # calculate pairwise km distances (may take a few minutes)
     km_dists = dict()
     pairs = list(itertools.combinations(coords.keys(), 2))
-    for (l1, l2) in pairs:
+    for l1, l2 in pairs:
         try:
             km_dists[(l1, l2)] = geopy.distance.geodesic(coords[l1], coords[l2]).km
         except ValueError:
             pass  # no coordinates in database
 
     # convert to matrix
-    gb_ids = sorted(gb_df['ID'].to_list())
+    gb_ids = sorted(gb_df["ID"].to_list())
     mtx = dict_to_matrix(km_dists, gb_ids)
 
     # write to csv
