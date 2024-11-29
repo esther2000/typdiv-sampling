@@ -5,7 +5,6 @@ DATA_PATH = PROJECT_ROOT / "data"
 EVAL_PATH = PROJECT_ROOT / "evaluation"
 FRAME_PATH = DATA_PATH / "frames"
 
-DEFAULT_DIST_PATH = DATA_PATH / "gb_lang_dists.csv"
 DEFAULT_GB_PATH = PROJECT_ROOT / "grambank/cldf/languages.csv"
 DEFAULT_WALS_PATH = DATA_PATH / "wals_dedup.csv"
 DEFAULT_COUNTS_PATH = DATA_PATH / "convenience/convenience_counts.json"

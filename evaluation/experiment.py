@@ -1,22 +1,19 @@
 import argparse
 import concurrent.futures
-import warnings
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
 from typdiv_sampling.evaluation import Evaluator, Result
 from typdiv_sampling.sampling import Sampler
-
-warnings.filterwarnings("ignore", category=DeprecationWarning)
-
-# location of this file, so it does not matter from where this script is called
-# TODO: move this to a constants.py or something since it's copy pasted atm
-CWD = Path(__file__).parent
-PROJECT_ROOT = CWD.parent
-DATA = PROJECT_ROOT / "data"
+from typdiv_sampling.constants import (
+    DEFAULT_DISTANCES_PATH,
+    DEFAULT_GB_PATH,
+    DEFAULT_WALS_PATH,
+    DEFAULT_GB_FEATURES_PATH,
+    DEFAULT_COUNTS_PATH,
+)
 
 
 def create_arg_parser():
@@ -25,31 +22,31 @@ def create_arg_parser():
         "-d",
         "--dist_path",
         type=Path,
-        default=DATA / "gb_lang_dists.csv",
+        default=DEFAULT_DISTANCES_PATH,
         help="File with pairwise language distances.",
     )
     parser.add_argument(
         "-gb_path",
         type=Path,
-        default=PROJECT_ROOT / "grambank/cldf/languages.csv",
+        default=DEFAULT_GB_PATH,
         help="File with Grambank language information.",
     )
     parser.add_argument(
         "-wals_path",
         type=Path,
-        default=DATA / "wals_dedup.csv",
+        default=DEFAULT_WALS_PATH,
         help="File with WALS language information.",
     )
     parser.add_argument(
         "-gb_features_path",
         type=Path,
-        default=DATA / "gb_processed.csv",
+        default=DEFAULT_GB_FEATURES_PATH,
         help="File with Grambank features.",
     )
     parser.add_argument(
         "-counts_path",
         type=Path,
-        default=DATA / "convenience/convenience_counts.json",
+        default=DEFAULT_COUNTS_PATH,
         help="File with language counts from previous work.",
     )
     parser.add_argument(
@@ -63,8 +60,7 @@ def create_arg_parser():
         "-f",
         "--frame_path",
         type=Path,
-        # default=DATA / "frames/langs_gb.txt",
-        help="Frame to sample from as a text file with one Glottocode per line. If left empty, the sampling frame"
+        help="Frame to sample from as a text file with one Glottocode per line. If left empty, the sampling frame "
         "will be all languages in the specified language distance file.",
     )
     parser.add_argument(
@@ -110,18 +106,9 @@ def main():
         counts_path=args.counts_path,
     )
 
-    gb = pd.read_csv(args.gb_features_path, index_col="Lang_ID")
-    gb = gb.drop(["Unnamed: 0", "Unnamed: 0.1"], axis=1)
-
-    # no_cov introduces a lot of unneeded entropy and both 'missing' values
-    # have the same meaning (roughly) for our purposes
-    gb.replace(to_replace="no_cov", value="?", inplace=True)
-    gb_by_lang = {i: np.array(row) for i, row in gb.iterrows()}
-
+    # TODO: remove this pre-processing
     dist_df = pd.read_csv(args.dist_path).set_index("Unnamed: 0")
-    dist_dict = dist_df.to_dict("dict")  # TODO: this contains double info
-
-    evaluator = Evaluator(gb_by_lang, dist_dict)
+    evaluator = Evaluator(args.gb_features_path, args.dist_path)
 
     # n runs to get an average for the random methods with a different seed per run
     RUNS = args.rand_runs
@@ -132,7 +119,6 @@ def main():
         )
     else:
         N = sorted(dist_df.columns.to_list())
-    del gb
 
     # method with n runs
     experiments = [

@@ -8,7 +8,7 @@ import pandas as pd
 
 from typdiv_sampling.constants import (
     DEFAULT_COUNTS_PATH,
-    DEFAULT_DIST_PATH,
+    DEFAULT_DISTANCES_PATH,
     DEFAULT_GB_PATH,
     DEFAULT_WALS_PATH,
 )
@@ -22,7 +22,7 @@ METHODS = ["random", "random_family", "random_genus", "maxsum", "maxmin", "conve
 class Sampler:
     def __init__(
         self,
-        dist_path: Path = DEFAULT_DIST_PATH,
+        dist_path: Path = DEFAULT_DISTANCES_PATH,
         gb_path: Path = DEFAULT_GB_PATH,
         wals_path: Path = DEFAULT_WALS_PATH,
         counts_path: Path = DEFAULT_COUNTS_PATH,

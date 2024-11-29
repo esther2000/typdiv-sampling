@@ -11,7 +11,7 @@ import pandas as pd
 from sklearn.metrics.pairwise import nan_euclidean_distances
 
 from typdiv_sampling.constants import (
-    DEFAULT_DIST_PATH,
+    DEFAULT_DISTANCES_PATH,
     DEFAULT_GB_FEATURES_PATH,
     DEFAULT_GB_RAW_FEATURES_PATH,
     DEFAULT_LANGUOID_PATH,
@@ -24,7 +24,7 @@ def create_arg_parser():
         "-o",
         "--output_dist_file",
         type=Path,
-        default=DEFAULT_DIST_PATH,
+        default=DEFAULT_DISTANCES_PATH,
         help="Name of file that output distances should be written to",
     )
     parser.add_argument(

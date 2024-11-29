@@ -5,7 +5,6 @@ Note that sample_maxsum and sample_maxmin are duplicated because there are outpu
 
 import argparse
 import random
-import warnings
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -17,9 +16,7 @@ from typdiv_sampling.distance import (
     get_first_point,
     get_summed_dist_dict,
 )
-
-warnings.filterwarnings("ignore", category=DeprecationWarning)
-
+from typdiv_sampling.constants import DATA_PATH
 
 RAND_SEED = 123
 random.seed(RAND_SEED)
@@ -32,7 +29,7 @@ def create_arg_parser():
         "--sampling_method",
         type=str,
         default="typ_maxsum",
-        help="Sampling method, choose from: random_family, random_genus, typ_maxsum, typ_maxmin",  # TODO: add random?
+        help="Sampling method, choose from: typ_maxsum, typ_maxmin",
     )
     parser.add_argument(
         "-k",
@@ -90,17 +87,16 @@ def sample_maxmin(max_langs, dist_mtx):
 def main():
     args = create_arg_parser()
 
-    V = np.load("../data/normal_2000_loc1_scale10.npy")
+    V = np.load(DATA_PATH / "normal_2000_loc1_scale10.npy")
     all_langs = [i for i in range(len(V))]
     dist_dict = get_dist_matrix(V)
 
-    # sample
     if args.sampling_method == "typ_maxsum":
         sample = sample_maxsum(args.k_langs, dist_dict)
     elif args.sampling_method == "typ_maxmin":
         sample = sample_maxmin(args.k_langs, dist_dict)
     else:
-        print("Error: Unknown sampling method.")
+        raise ValueError("Error: Unknown sampling method.")
 
     print(dist_score(sample, dist_dict))
     print(sample)
