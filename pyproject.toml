@@ -2,10 +2,13 @@
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
+[project.urls]
+Repository = "https://github.com/esther2000/typdiv-sampling"
+"Bug Tracker" = "https://github.com/esther2000/typdiv-sampling/issues"
+
 [project]
 name = "typdiv_sampling"
 version = "0.1"
-dependencies = ["tqdm", "pandas", "scikit-learn"]
 requires-python = ">= 3.9"
 authors = [
     { name = "Esther Ploeger", email = "espl@cs.aau.dk" },
@@ -29,6 +32,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
 ]
+dependencies = ["tqdm", "pandas", "scikit-learn"]
 
 [project.optional-dependencies]
 dev = ["pytest", "pre-commit", "ruff"]
@@ -44,9 +48,8 @@ vis = [
     "fiject @ git+https://github.com/bauwenst/fiject.git",
 ]
 
-[project.urls]
-Repository = "https://github.com/esther2000/typdiv-sampling"
-"Bug Tracker" = "https://github.com/esther2000/typdiv-sampling/issues"
+[project.scripts]
+sample = "typdiv_sampling.cli:main"
 
 [tool.pytest.ini_options]
 pythonpath = ["."]

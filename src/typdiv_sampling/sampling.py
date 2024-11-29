@@ -6,6 +6,12 @@ from typing import Callable
 
 import pandas as pd
 
+from typdiv_sampling.constants import (
+    DEFAULT_COUNTS_PATH,
+    DEFAULT_DIST_PATH,
+    DEFAULT_GB_PATH,
+    DEFAULT_WALS_PATH,
+)
 from typdiv_sampling.distance import get_first_point, get_summed_dist_dict
 
 Language = str
@@ -15,7 +21,11 @@ METHODS = ["random", "random_family", "random_genus", "maxsum", "maxmin", "conve
 
 class Sampler:
     def __init__(
-        self, dist_path: Path, gb_path: Path, wals_path: Path, counts_path: Path
+        self,
+        dist_path: Path = DEFAULT_DIST_PATH,
+        gb_path: Path = DEFAULT_GB_PATH,
+        wals_path: Path = DEFAULT_WALS_PATH,
+        counts_path: Path = DEFAULT_COUNTS_PATH,
     ) -> None:
         for p in [dist_path, gb_path, wals_path, counts_path]:
             if not p.exists():

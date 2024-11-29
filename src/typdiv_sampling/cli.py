@@ -1,15 +1,17 @@
 import argparse
-import warnings
+
 from pathlib import Path
 
 from typdiv_sampling import METHODS, Sampler
-
-warnings.filterwarnings("ignore", category=DeprecationWarning)
-
-# location of this file, so it does not matter from where this script is called
-PROJECT_ROOT = Path(__file__).parent
-DATA = PROJECT_ROOT / "data"
-EVAL = PROJECT_ROOT / "evaluation"
+from typdiv_sampling.constants import (
+    EVAL_PATH,
+    DEFAULT_GB_PATH,
+    DEFAULT_WALS_PATH,
+    DEFAULT_COUNTS_PATH,
+    DEFAULT_GB_FEATURES_PATH,
+    DEFAULT_DISTANCES_PATH,
+    DEFAULT_FRAME_PATH,
+)
 
 
 def create_arg_parser():
@@ -20,7 +22,7 @@ def create_arg_parser():
         nargs="+",
         type=str,
         default=["maxsum"],
-        help=f"Sampling method(s), choose from: {','.join(METHODS)}.",
+        help=f"Sampling method(s), choose from: {', '.join(METHODS)}",
     )
     parser.add_argument(
         "-k",
@@ -33,38 +35,38 @@ def create_arg_parser():
         "-f",
         "--frame_path",
         type=Path,
-        default=DATA / "frames/gb_frame-bnrc75.txt",
+        default=DEFAULT_FRAME_PATH,
         help="File with languages to select from, one Glottocode per line.",
     )
     parser.add_argument(
         "-d",
         "--dist_path",
         type=Path,
-        default=DATA / "gb_lang_dists.csv",
+        default=DEFAULT_DISTANCES_PATH,
         help="File with pairwise language distances.",
     )
     parser.add_argument(
         "-gb_path",
         type=Path,
-        default=PROJECT_ROOT / "grambank/cldf/languages.csv",
+        default=DEFAULT_GB_PATH,
         help="File with Grambank language information.",
     )
     parser.add_argument(
         "-wals_path",
         type=Path,
-        default=DATA / "wals_dedup.csv",
+        default=DEFAULT_WALS_PATH,
         help="File with WALS language information.",
     )
     parser.add_argument(
         "-gb_features_path",
         type=Path,
-        default=DATA / "gb_processed.csv",
+        default=DEFAULT_GB_FEATURES_PATH,
         help="File with Grambank features.",
     )
     parser.add_argument(
         "-counts_path",
         type=Path,
-        default=DATA / "convenience/convenience_counts.json",
+        default=DEFAULT_COUNTS_PATH,
         help="File with language counts from previous work.",
     )
     parser.add_argument(
@@ -97,7 +99,7 @@ def main():
             continue
 
         sample = getattr(sampler, f"sample_{method}")(frame, args.k_langs, args.seed)
-        outfile = f"{EVAL}/samples/{method}-{args.frame_path.stem}-{args.k_langs}-{args.dist_path.stem}-{args.seed}.txt"
+        outfile = f"{EVAL_PATH}/samples/{method}-{args.frame_path.stem}-{args.k_langs}-{args.dist_path.stem}-{args.seed}.txt"
         Path(outfile).write_text("\n".join(sample))
         print(f"Result written to {outfile}\n\n{sample=}")
 

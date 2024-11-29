@@ -1,8 +1,13 @@
 import itertools
 import math
 from dataclasses import dataclass
+from pathlib import Path
+import numpy as np
+import pandas as pd
+
 
 from typdiv_sampling.sampling import Language, SamplingFunc
+from typdiv_sampling.constants import DEFAULT_GB_FEATURES_PATH, DEFAULT_DISTANCES_PATH
 
 
 def entropy(string: str) -> float:
@@ -70,11 +75,27 @@ class Result:
 class Evaluator:
     """Class to evaluate language samples."""
 
-    def __init__(self, gb_by_lang: dict[Language, list[str]], distances) -> None:
+    def __init__(
+        self,
+        gb_features_path: Path = DEFAULT_GB_FEATURES_PATH,
+        distances_path: Path = DEFAULT_DISTANCES_PATH,
+    ) -> None:
+        # TODO improve this pre-processing, it's stupid
+        gb = pd.read_csv(gb_features_path, index_col="Lang_ID")
+        gb = gb.drop(["Unnamed: 0", "Unnamed: 0.1"], axis=1)
+
+        # no_cov introduces a lot of unneeded entropy and both 'missing' values
+        # have the same meaning (roughly) for our purposes
+        gb.replace(to_replace="no_cov", value="?", inplace=True)
+        gb_by_lang = {i: np.array(row) for i, row in gb.iterrows()}
+
+        dist_df = pd.read_csv(distances_path).set_index("Unnamed: 0")
+        dist_dict = dist_df.to_dict("dict")  # TODO: this contains double info
+
         self.gb_by_lang = gb_by_lang
         self.n_features = len(gb_by_lang[list(gb_by_lang.keys())[0]])
         self.cache: dict[str, Result] = dict()
-        self.distances = distances
+        self.distances = dist_dict
 
     def evaluate_sample(self, sample: list[Language], run: int | None = None) -> Result:
         if (sample_key := "".join(sorted(sample))) and sample_key in self.cache:

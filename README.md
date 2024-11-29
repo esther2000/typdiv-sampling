@@ -23,7 +23,7 @@ If you use any contents from this repository for your work, we kindly ask you to
 
 
 
-# Installation and data
+## Installation and data
 The package is tested with Python 3.10.
 
 ```sh
@@ -52,7 +52,7 @@ The data can be downloaded and prepared using the following script:
 ./prepare-data.sh
 ```
 
-# Example usage
+## Example usage
 
 ### Sampling
 ```python
@@ -65,17 +65,17 @@ k = 3  # The number of languages to sample.
 seed = 1 # A random seed for the non-deterministic methods.
 
 # Initialize with default setup.
-sampler = Sampler(
-    dist_path=dist_path,  # Language distances to use.
-    gb_path=gb_path,  # Grambank csv file.
-    wals_path=wals_path,  # WALS csv file.
-    counts_path=counts_path,  # Convenience count file.
-)
+sampler = Sampler()
 sampler.sample_maxsum(frame, k)
 > ['kore1280', 'russ1263', 'stan1290']
 ```
 
 Sampling methods include: `sample_maxsum()` (MaxSum), `sample_maxmin()` (MaxMin) and several baselines: `sample_random()`, `sample_convenience()`, `sample_random_family()`, `sample_random_genus()`.
+
+Most options are also available from the cli of the package:
+```sh
+sample --help
+```
 
 An example of sampling usage in practice is found in: `evaluation/experiment.py`.
 
@@ -84,10 +84,8 @@ An example of sampling usage in practice is found in: `evaluation/experiment.py`
 ```python
 from typdiv_sampling.evaluation import Evaluator
 
-evaluator = Evaluator(
-    gb_by_lang=gb_by_lang,  # Grambank feature vectors by language.
-    dist_dict=dist_dict,  # Pairwise language distances as a dict.
-)
+# With default settings.
+evaluator = Evaluator()
 
 sample = ['kore1280', 'russ1263', 'stan1290']
 evaluator.evaluate_sample(sample)
@@ -117,10 +115,10 @@ The results and visualizations from the paper can be reproduced with the followi
 * UD expansion case study (Table 3, page 19): `use_cases/dataset_expansion/next-best.ipynb`
 * Geographical distance plot (Figure 7, page 20):  `use_cases/geo_dist/visualize-dist.ipynb`
 
-# Data Licenses
+## Data Licenses
 - [Grambank](https://grambank.clld.org/) is licensed under a [Creative Commons 4.0 BY International License](https://creativecommons.org/licenses/by/4.0/).
 - [WALS](https://wals.info/) is licensed under a [Creative Commons 4.0 BY International License](https://creativecommons.org/licenses/by/4.0/).
 - [Glottolog](https://github.com/glottolog/glottolog) is licensed under a [Creative Commons 4.0 BY International License](https://creativecommons.org/licenses/by/4.0/).
 
-# License
+## License
 The code and data in this repo are licensed under a [Creative Commons 4.0 BY International License](https://creativecommons.org/licenses/by/4.0/).
