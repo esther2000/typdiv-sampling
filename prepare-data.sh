@@ -18,4 +18,4 @@ wget https://raw.githubusercontent.com/WPoelman/typ-div-survey/master/data/annot
 
 cd ..
 
-python data/compute_all_distances.py -b -n -c 0.25 -r -g data/gb_lang_feat_vals.csv -o data/bin-norm-distances.csv
+python data/compute_all_distances.py -b -n -c 0.25 -r

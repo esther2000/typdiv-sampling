@@ -127,6 +127,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.python-version
 
 # Spyder project settings
 .spyderproject
@@ -154,8 +155,8 @@ cython_debug/
 
 *.pdf
 
-# 100mb file
+# large files
 data/gb_lang_dists.csv
 data/gb_processed.csv
-
-.python-version
+data/annotations-enhanced.csv
+data/languoid.csv

@@ -10,11 +10,12 @@ from pathlib import Path
 import pandas as pd
 from sklearn.metrics.pairwise import nan_euclidean_distances
 
-# location of this file, so it does not matter from where this script is called
-# TODO: move this to a constants.py or something since it's copy pasted atm
-CWD = Path(__file__).parent
-PROJECT_ROOT = CWD.parent
-DATA = PROJECT_ROOT / "data"
+from typdiv_sampling.constants import (
+    DEFAULT_DIST_PATH,
+    DEFAULT_GB_FEATURES_PATH,
+    DEFAULT_GB_RAW_FEATURES_PATH,
+    DEFAULT_LANGUOID_PATH,
+)
 
 
 def create_arg_parser():
@@ -23,7 +24,7 @@ def create_arg_parser():
         "-o",
         "--output_dist_file",
         type=Path,
-        default=DATA / "gb_lang_dists.csv",
+        default=DEFAULT_DIST_PATH,
         help="Name of file that output distances should be written to",
     )
     parser.add_argument(
@@ -36,7 +37,7 @@ def create_arg_parser():
         "-d",
         "--data_output_file",
         type=Path,
-        default=DATA / "gb_processed.csv",
+        default=DEFAULT_GB_FEATURES_PATH,
         help="Name of file that post-processed (bin/norm/crop/filter) grambank version should be written to",
     )
     parser.add_argument(
@@ -58,15 +59,20 @@ def create_arg_parser():
         help="Option: remove macrolanguages",
     )
     parser.add_argument(
+        "-la",
+        "--languoids_file",
+        default=DEFAULT_LANGUOID_PATH,
+        help="Path to Glottolog file with languoid metadata.",
+    )
+    parser.add_argument(
         "-g",
         "--gb_file",
-        default=DATA / "gb_lang_feat_vals.csv",
+        default=DEFAULT_GB_RAW_FEATURES_PATH,
         help="Path to Grambank file with features per language.",
     )
     parser.add_argument(
         "-f",
         "--features",
-        # default=DATA / "feature_subset_example.txt",
         help="Path to file with the GB feature IDs (one per line) that should be included."
         "See example: data/feature_subset_example.txt",
     )
@@ -128,9 +134,9 @@ def crop(gb_df, perc):
     return gb_df
 
 
-def filter_macrolangs(gb_df):
+def filter_macrolangs(gb_df, languoid_path):
     """Filter out macrolanguages (e.g. Central pacific linkage)"""
-    glottolog_data = pd.read_csv(DATA / "languoid.csv")
+    glottolog_data = pd.read_csv(languoid_path)
     child_langs = {
         row["id"]: row["child_language_count"] for _, row in glottolog_data.iterrows()
     }
@@ -178,7 +184,7 @@ def main():
 
     # Optional: remove macrolanguages
     if args.remove_macro:
-        gb_matrix = filter_macrolangs(gb_matrix)
+        gb_matrix = filter_macrolangs(gb_matrix, args.languoids_file)
 
     # Optional: crop langs according to feature coverage
     if args.crop_perc:  # specify minimum % coverage per lang
