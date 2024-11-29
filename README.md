@@ -21,6 +21,7 @@ If you use any contents from this repository for your work, we kindly ask you to
 }
 ```
 
+For the specific version related to the initial preprint, please check the `preprint-v1` branch.
 
 
 ## Installation and data
