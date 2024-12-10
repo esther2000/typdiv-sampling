@@ -1,6 +1,8 @@
 from collections import defaultdict
 
 import numpy as np
+import pandas as pd
+from sklearn.metrics.pairwise import nan_euclidean_distances
 
 
 def dist(p1, p2):
@@ -36,3 +38,18 @@ def get_summed_dist_dict(distance_dict, all_langs, current_langs):
 
 def get_first_point(dists):
     return np.argmax(dists.sum(axis=1))
+
+
+def make_language_distances(feature_dataframe, normalize: bool = True):
+    """Create distance matrix from a language feature dataframe. Returns the distance matrix as a dataframe."""
+
+    sim_matrix = nan_euclidean_distances(feature_dataframe, feature_dataframe)
+    glottocodes = feature_dataframe.index
+    # NOTE: fillna(0) for maximisation only!
+    sim_df = pd.DataFrame(sim_matrix, columns=glottocodes, index=glottocodes).fillna(0)
+    if normalize:
+        sim_df = (sim_df - sim_df.min().min()) / (
+            sim_df.max().max() - sim_df.min().min()
+        )
+
+    return sim_df

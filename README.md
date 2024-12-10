@@ -102,6 +102,28 @@ evaluator.evaluate_sample(sample)
 ```
 An example of evaluation usage in practice is found in `use_cases/next-best.ipynb`.
 
+### Custom features
+By default, we use Grambank for language feature vectors.
+The vectors are used for distances calculations and evaluation metrics.
+To use different features, we follow a similar format to Grambank.
+You need to:
+
+1. Provide a csv file in the following format:
+```csv
+Lang_ID,        <feature_name_1>,  <feature_name_2>,  <feature_name_3>,  ..., <feature_name_n>
+<glottocode_1>, <feature_value_1>, <feature_value_2>, <feature_value_3>, ..., <feature_value_n>
+<glottocode_2>, ...,               ...,               ...,               ..., ...
+<glottocode_3>,
+...
+<glottocode_n>,
+```
+
+Missing values should be `nan`!
+
+1. Run the distance calculation algorithm.
+2. Provide this to the sampling and/or evaluation methods.
+
+We have provided a example of how this using geographic coordinates.
 
 ## Reproducibility
 
