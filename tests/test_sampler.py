@@ -29,9 +29,7 @@ def test_df_sampling():
         covers distances between all 100 languages (a lot of ties)
     """
 
-    gb_frame = [
-        lang.strip() for lang in (FIXTURES / "gb_frame_100.txt").read_text().split("\n")
-    ]
+    gb_frame = [lang.strip() for lang in (FIXTURES / "gb_frame_100.txt").read_text().split("\n")]
 
     # sample what we need, randomly from the families
     assert len(sampler.sample_random_family(gb_frame, 34)) == 34

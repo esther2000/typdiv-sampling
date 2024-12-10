@@ -42,10 +42,7 @@ def main():
 
     # retrieve language coordinates from grambank
     gb_df = pd.read_csv("../../grambank/cldf/languages.csv")
-    coords = {
-        row["ID"]: row[["Latitude", "Longitude"]].to_list()
-        for _, row in gb_df.iterrows()
-    }
+    coords = {row["ID"]: row[["Latitude", "Longitude"]].to_list() for _, row in gb_df.iterrows()}
 
     # calculate pairwise km distances (may take a few minutes)
     km_dists = dict()

@@ -95,9 +95,7 @@ def main():
             .encode(
                 x=alt.X("k", title="Sample size"),
                 y=alt.Y(metric, title=Y_LABELS[metric], scale=alt.Scale(domain=[0, 1])),
-                color=alt.Color("Method", legend=legend, sort=legend_order).scale(
-                    range=COLORS
-                ),
+                color=alt.Color("Method", legend=legend, sort=legend_order).scale(range=COLORS),
             )
         )
 
@@ -111,9 +109,7 @@ def main():
                     title=Y_LABELS[metric],
                     scale=alt.Scale(domain=[0, 1]),
                 ),
-                color=alt.Color("Method", legend=legend, sort=legend_order).scale(
-                    range=COLORS
-                ),
+                color=alt.Color("Method", legend=legend, sort=legend_order).scale(range=COLORS),
             )
         )
         plots.append(err_bars + points)

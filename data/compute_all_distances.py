@@ -90,12 +90,8 @@ def binarize(gb_df, selected_mv_feats):
     """Binarize multi-value features
     TODO: this could probably be done more elegantly but it works"""
     for feat in selected_mv_feats:
-        gb_df[f"{feat}_1"] = (
-            (gb_df[f"{feat}"] == "1").astype(int).astype(str)
-        )  # label 1
-        gb_df[f"{feat}_2"] = (
-            (gb_df[f"{feat}"] == "2").astype(int).astype(str)
-        )  # label 2
+        gb_df[f"{feat}_1"] = (gb_df[f"{feat}"] == "1").astype(int).astype(str)  # label 1
+        gb_df[f"{feat}_2"] = (gb_df[f"{feat}"] == "2").astype(int).astype(str)  # label 2
 
         # label 3 (both)
         gb_df.loc[gb_df[f"{feat}"] == "3", f"{feat}_1"] = "1"
@@ -128,6 +124,8 @@ def crop(gb_df, perc):
     tot_feats = len([x for x in gb_df.columns if x.startswith("GB")])
     for i, row in gb_df.iterrows():
         no_data = row.to_list().count("no_cov") + row.to_list().count("?")
+        print(tot_feats)
+        print((tot_feats - no_data), (perc * tot_feats))
         if (tot_feats - no_data) < (perc * tot_feats):
             gb_df = gb_df.drop(i)
 
@@ -137,9 +135,7 @@ def crop(gb_df, perc):
 def filter_macrolangs(gb_df, languoid_path):
     """Filter out macrolanguages (e.g. Central pacific linkage)"""
     glottolog_data = pd.read_csv(languoid_path)
-    child_langs = {
-        row["id"]: row["child_language_count"] for _, row in glottolog_data.iterrows()
-    }
+    child_langs = {row["id"]: row["child_language_count"] for _, row in glottolog_data.iterrows()}
 
     for i, row in gb_df.iterrows():
         if child_langs[row["Lang_ID"]] > 0:
@@ -180,7 +176,7 @@ def main():
 
     # Optional: binarize multi-value features
     if args.binarize:
-        gb_matrix, gb_feats = binarize(gb_matrix, set(mv_feats).intersection(gb_feats))
+        gb_matrix, gb_feats = binarize(gb_matrix, sorted(list(set(mv_feats).intersection(gb_feats))))
 
     # Optional: remove macrolanguages
     if args.remove_macro:
@@ -194,14 +190,9 @@ def main():
     gb_matrix.to_csv(args.data_output_file)
 
     # Make vector per language
-    lang_vecs = {
-        row["Lang_ID"]: row[[x for x in gb_feats]].to_list()
-        for _, row in gb_matrix.iterrows()
-    }
+    lang_vecs = {row["Lang_ID"]: row[[x for x in gb_feats]].to_list() for _, row in gb_matrix.iterrows()}
     for lang, vec in lang_vecs.items():
-        lang_vecs[lang] = [
-            x if x != "no_cov" and x != "?" else float("NaN") for x in vec
-        ]
+        lang_vecs[lang] = [x if x != "no_cov" and x != "?" else float("NaN") for x in vec]
 
     # Compute similarity matrix
     langs = gb_matrix["Lang_ID"].to_list()
@@ -209,13 +200,9 @@ def main():
     sim_matrix = nan_euclidean_distances(vecs, vecs)
 
     # Write to file
-    sim_df = pd.DataFrame(sim_matrix, columns=langs, index=langs).fillna(
-        0
-    )  # NOTE: 0 for maximisation only!
+    sim_df = pd.DataFrame(sim_matrix, columns=langs, index=langs).fillna(0)  # NOTE: 0 for maximisation only!
     if args.normalize:
-        sim_df = sim_df.map(
-            normalize, x_min=sim_df.min().min(), x_max=sim_df.max().max()
-        )
+        sim_df = sim_df.map(normalize, x_min=sim_df.min().min(), x_max=sim_df.max().max())
 
     sim_df.to_csv(args.output_dist_file)
 

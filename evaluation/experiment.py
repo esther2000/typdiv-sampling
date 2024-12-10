@@ -114,9 +114,7 @@ def main():
     RUNS = args.rand_runs
     RANGE = [args.s] if args.s == args.e else range(args.s, args.e + 1, args.st)
     if args.frame_path:
-        N = sorted(
-            [g_code.strip() for g_code in args.frame_path.read_text().split("\n")]
-        )
+        N = sorted([g_code.strip() for g_code in args.frame_path.read_text().split("\n")])
     else:
         N = sorted(dist_df.columns.to_list())
 
@@ -137,9 +135,7 @@ def main():
         futures = {}
         for k in RANGE:
             for name, runs in experiments:
-                future = ex.submit(
-                    evaluator.rand_runs, runs, getattr(sampler, f"sample_{name}"), N, k
-                )
+                future = ex.submit(evaluator.rand_runs, runs, getattr(sampler, f"sample_{name}"), N, k)
                 # some trickery, we use the object hash of a future as a dict key
                 futures[future] = (name, k)
 

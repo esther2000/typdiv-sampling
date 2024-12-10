@@ -41,9 +41,7 @@ class Sampler:
         self._wals_df = None
         self._counts = None
 
-    def sample_maxsum(
-        self, frame: list[Language], k: int, random_seed: int | None = None
-    ) -> list[Language]:
+    def sample_maxsum(self, frame: list[Language], k: int, random_seed: int | None = None) -> list[Language]:
         """
         Maximum Diversity Problem (MaxSum)
         Sample k languages from N, where we iteratively add the
@@ -64,9 +62,7 @@ class Sampler:
 
         return sorted([id2lang[i] for i in langs])
 
-    def sample_maxmin(
-        self, frame: list[Language], k: int, random_seed: int | None = None
-    ) -> list[Language]:
+    def sample_maxmin(self, frame: list[Language], k: int, random_seed: int | None = None) -> list[Language]:
         """
         MaxMin Diversity Problem
         Sample k languages from N, where we iteratively add the
@@ -88,17 +84,13 @@ class Sampler:
 
         return sorted([id2lang[i] for i in S])
 
-    def sample_random(
-        self, frame: list[Language], k: int, random_seed: int | None = None
-    ) -> list[Language]:
+    def sample_random(self, frame: list[Language], k: int, random_seed: int | None = None) -> list[Language]:
         """Sample k from N completely randomly"""
         # local random instance to make this thread safe
         rand = random.Random(random_seed)
         return sorted(rand.sample(frame, k))
 
-    def sample_random_family(
-        self, frame: list[Language], k: int, random_seed: int | None = None
-    ) -> list[Language]:
+    def sample_random_family(self, frame: list[Language], k: int, random_seed: int | None = None) -> list[Language]:
         """
         Sample k languages from N where we sample from
         language families as uniformly as the data allows.
@@ -106,9 +98,7 @@ class Sampler:
         df = self.gb_df[self.gb_df["Glottocode"].isin(frame)]
         return sorted(self._df_sample(df, "Family_name", k, random_seed))
 
-    def sample_random_genus(
-        self, frame: list[Language], k: int, random_seed: int | None = None
-    ) -> list[Language]:
+    def sample_random_genus(self, frame: list[Language], k: int, random_seed: int | None = None) -> list[Language]:
         """
         Sample k languages from N where we sample from
         language genera as uniformly as the data allows.
@@ -116,9 +106,7 @@ class Sampler:
         df = self.wals_df[self.wals_df["Glottocode"].isin(frame)]
         return sorted(self._df_sample(df, "Genus", k, random_seed))
 
-    def sample_convenience(
-        self, frame: list[Language], k: int, random_seed: int | None = None
-    ) -> list[Language]:
+    def sample_convenience(self, frame: list[Language], k: int, random_seed: int | None = None) -> list[Language]:
         """
         Sample k most-used languages from the literature on 'typologically diverse' language samples
         TODO: this can be max 195 --> change experiments to less than 500? or just lower number for this baseline?
@@ -136,9 +124,7 @@ class Sampler:
             grouped_counts[lang_count].append(lang)
 
         if n_langs < k:
-            raise ValueError(
-                f"Invalid value {k=}, we only have {n_langs} languages to sample from."
-            )
+            raise ValueError(f"Invalid value {k=}, we only have {n_langs} languages to sample from.")
 
         # Flatten list
         counts = []
@@ -149,9 +135,7 @@ class Sampler:
 
         return sorted([lang for lang, _ in counts[:k]])
 
-    def _df_sample(
-        self, df: pd.DataFrame, key: str, k: int, random_seed: int | None = None
-    ):
+    def _df_sample(self, df: pd.DataFrame, key: str, k: int, random_seed: int | None = None):
         if k < 1 or k > len(df):
             raise ValueError(f"Invalid value {k=}, make sure k > 0 and k <= {len(df)}")
 
@@ -185,9 +169,7 @@ class Sampler:
         )
         # Fill up the remaining langs by random selection from all groups
         while len(codes) < k:
-            new_sample = df[~(df["Glottocode"].isin(codes))].sample(
-                1, random_state=random_seed
-            )
+            new_sample = df[~(df["Glottocode"].isin(codes))].sample(1, random_state=random_seed)
             codes.append(new_sample["Glottocode"].values[0])
 
         return codes

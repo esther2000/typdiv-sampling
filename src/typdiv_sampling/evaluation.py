@@ -142,11 +142,7 @@ class Evaluator:
 
         return result
 
-    def rand_runs(
-        self, runs: int, func: SamplingFunc, N: list[Language], k: int
-    ) -> list[Result]:
+    def rand_runs(self, runs: int, func: SamplingFunc, N: list[Language], k: int) -> list[Result]:
         """Runs the provided function 'runs' times with different random seeds."""
-        results = [
-            self.evaluate_sample(func(N, k, run + k), run) for run in range(runs)
-        ]
+        results = [self.evaluate_sample(func(N, k, run + k), run) for run in range(runs)]
         return results

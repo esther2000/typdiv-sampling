@@ -99,7 +99,9 @@ def main():
             continue
 
         sample = getattr(sampler, f"sample_{method}")(frame, args.k_langs, args.seed)
-        outfile = f"{EVAL_PATH}/samples/{method}-{args.frame_path.stem}-{args.k_langs}-{args.dist_path.stem}-{args.seed}.txt"
+        outfile = (
+            f"{EVAL_PATH}/samples/{method}-{args.frame_path.stem}-{args.k_langs}-{args.dist_path.stem}-{args.seed}.txt"
+        )
         Path(outfile).write_text("\n".join(sample))
         print(f"Result written to {outfile}\n\n{sample=}")
 
