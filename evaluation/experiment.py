@@ -101,13 +101,10 @@ def main():
 
     sampler = Sampler(
         dist_path=args.dist_path,
-        gb_path=args.gb_path,
+        gb_languages_path=args.gb_path,
         wals_path=args.wals_path,
         counts_path=args.counts_path,
     )
-
-    # TODO: remove this pre-processing
-    dist_df = pd.read_csv(args.dist_path).set_index("Unnamed: 0")
     evaluator = Evaluator(args.gb_features_path, args.dist_path)
 
     # n runs to get an average for the random methods with a different seed per run
@@ -116,7 +113,7 @@ def main():
     if args.frame_path:
         N = sorted([g_code.strip() for g_code in args.frame_path.read_text().split("\n")])
     else:
-        N = sorted(dist_df.columns.to_list())
+        N = sorted(sampler.dist_df.columns.to_list())
 
     # method with n runs
     experiments = [

@@ -11,7 +11,7 @@ FIXTURES = CWD / "fixtures"
 def test_df_sampling():
     sampler = Sampler(
         dist_path=FIXTURES / "fake_dists.csv",
-        gb_path=FIXTURES / "fake_gb.csv",
+        gb_languages_path=FIXTURES / "fake_gb.csv",
         wals_path=FIXTURES / "fake_wals.csv",
         counts_path=FIXTURES / "fake_counts.json",
     )

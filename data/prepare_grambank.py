@@ -76,7 +76,12 @@ def create_arg_parser():
         type=str,
         help="List of glottocodes (rows) that should be included, the rest is ignored.",
     )
-
+    parser.add_argument(
+        "-n",
+        "--normalize_dists",
+        action="store_true",
+        help="Normalize language distances.",
+    )
     args = parser.parse_args()
     return args
 
@@ -136,9 +141,7 @@ def main():
         print(f"Binarizing multi value features {GB_MULTI_VALUE_FEATURES}")
         before = df.shape
         # We have possibly removed values in the first step
-        to_process = sorted(
-            list(set(GB_MULTI_VALUE_FEATURES).intersection(set(df.columns)))
-        )
+        to_process = sorted(list(set(GB_MULTI_VALUE_FEATURES).intersection(set(df.columns))))
         df = binarize(df, to_process)
         after = df.shape
         print(f"{before=} and {after=}")
@@ -146,17 +149,11 @@ def main():
     # Optional: remove macrolanguages
     if args.remove_macro:
         if not (languoids_path := args.languoids_path):
-            raise FileNotFoundError(
-                "To remove macro languages, please provide the 'languoids_path'."
-            )
+            raise FileNotFoundError("To remove macro languages, please provide the 'languoids_path'.")
         print("Removing macro languages")
         before = len(df)
         glottolog_data = pd.read_csv(languoids_path)
-        df = df[
-            df.index.isin(
-                glottolog_data[glottolog_data["child_language_count"] == 0]["id"]
-            )
-        ]
+        df = df[df.index.isin(glottolog_data[glottolog_data["child_language_count"] == 0]["id"])]
         after = len(df)
         print(f"{before=} and {after=}")
 
@@ -173,7 +170,7 @@ def main():
     df.to_csv(args.output_path, index="Lang_ID")
 
     # At this point we have the data in the correct format to create distances
-    distances = make_language_distances(df)
+    distances = make_language_distances(df, args.normalize_dists)
     distances.to_csv(args.distances_path)
 
 

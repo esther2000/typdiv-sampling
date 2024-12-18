@@ -88,7 +88,7 @@ def main():
 
     sampler = Sampler(
         dist_path=args.dist_path,
-        gb_path=args.gb_path,
+        gb_languages_path=args.gb_path,
         wals_path=args.wals_path,
         counts_path=args.counts_path,
     )

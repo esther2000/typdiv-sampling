@@ -23,16 +23,16 @@ class Sampler:
     def __init__(
         self,
         dist_path: Path = DEFAULT_DISTANCES_PATH,
-        gb_path: Path = DEFAULT_GB_LANGUAGES_PATH,
+        gb_languages_path: Path = DEFAULT_GB_LANGUAGES_PATH,
         wals_path: Path = DEFAULT_WALS_PATH,
         counts_path: Path = DEFAULT_COUNTS_PATH,
     ) -> None:
-        for p in [dist_path, gb_path, wals_path, counts_path]:
+        for p in [dist_path, gb_languages_path, wals_path, counts_path]:
             if not p.exists():
                 raise FileNotFoundError(f"Cannot find {p}")
 
         self.dist_path = dist_path
-        self.gb_path = gb_path
+        self.gb_path = gb_languages_path
         self.wals_path = wals_path
         self.counts_path = counts_path
 
@@ -186,7 +186,7 @@ class Sampler:
     def dist_df(self):
         """Language distances dataframe, lazily loaded."""
         if self._dist_df is None:
-            self._dist_df = pd.read_csv(self.dist_path, index_col=0)
+            self._dist_df = pd.read_csv(self.dist_path, index_col="Lang_ID")
         return self._dist_df
 
     @property
