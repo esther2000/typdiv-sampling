@@ -121,8 +121,8 @@ Lang_ID,        <feature_name_1>,  <feature_name_2>,  ... <feature_name_n>
 
 Missing values should be `nan`!
 
-2. Run the distance calculation algorithm (Euclidian distance).
-3. Provide this to the sampling and/or evaluation methods.
+2. Create the distance matrix (Euclidian distance) using `typdiv_sampling.distances make_language_distances`.
+3. Provide the path to this csv to the sampling and/or evaluation methods.
 
 ### Custom distances
 > This corresponds to starting at step **2** in the diagram listed above.
@@ -140,7 +140,7 @@ You need to:
 <glottocode_n>                                      0,
 ```
 
-2. Provide this to the sampling and/or evaluation methods.
+2. Provide the path to this csv to the sampling and/or evaluation methods.
 
 
 ## Reproducibility
