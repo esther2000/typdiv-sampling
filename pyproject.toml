@@ -41,7 +41,7 @@ vis = [
     "altair",
     "vl-convert-python",
     "geopy",
-    "geopandas",
+    "geopandas==0.14.4", # for the map used in geo distances
     "shapely",
     "tokenizers",
     "pyarrow",

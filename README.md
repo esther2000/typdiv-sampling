@@ -103,27 +103,45 @@ evaluator.evaluate_sample(sample)
 An example of evaluation usage in practice is found in `use_cases/next-best.ipynb`.
 
 ### Custom features
+> This corresponds to starting at step **1** in the diagram listed above.
+
 By default, we use Grambank for language feature vectors.
 The vectors are used for distances calculations and evaluation metrics.
 To use different features, we follow a similar format to Grambank.
 You need to:
 
 1. Provide a csv file in the following format:
-```csv
-Lang_ID,        <feature_name_1>,  <feature_name_2>,  <feature_name_3>,  ..., <feature_name_n>
-<glottocode_1>, <feature_value_1>, <feature_value_2>, <feature_value_3>, ..., <feature_value_n>
-<glottocode_2>, ...,               ...,               ...,               ..., ...
-<glottocode_3>,
+```
+Lang_ID,        <feature_name_1>,  <feature_name_2>,  ... <feature_name_n>
+<glottocode_1>, <feature_value_1>, <feature_value_2>, ... <feature_value_n>
+<glottocode_2>, ...,               ...,               ... ...
 ...
 <glottocode_n>,
 ```
 
 Missing values should be `nan`!
 
-1. Run the distance calculation algorithm.
+2. Run the distance calculation algorithm (Euclidian distance).
+3. Provide this to the sampling and/or evaluation methods.
+
+### Custom distances
+> This corresponds to starting at step **2** in the diagram listed above.
+
+If you already have distances between languages, you can provide these directly to the framework as well.
+We include an example of this using geographic coordinates in `use_cases/geo_dist`.
+You need to:
+
+1. Provide a matrix as a csv in the following format:
+```
+                <glottocode_1>, <glottocode_2>, ... <glottocode_n>
+<glottocode_1>, 0,              <dist_1_2>,
+<glottocode_2>, <dist_1_2>,     0,
+...
+<glottocode_n>                                      0,
+```
+
 2. Provide this to the sampling and/or evaluation methods.
 
-We have provided a example of how this using geographic coordinates.
 
 ## Reproducibility
 

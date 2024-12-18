@@ -160,3 +160,4 @@ data/gb_lang_dists.csv
 data/gb_processed.csv
 data/annotations-enhanced.csv
 data/languoid.csv
+**/geo_dists.csv

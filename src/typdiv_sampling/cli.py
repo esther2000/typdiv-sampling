@@ -5,7 +5,7 @@ from pathlib import Path
 from typdiv_sampling import METHODS, Sampler
 from typdiv_sampling.constants import (
     EVAL_PATH,
-    DEFAULT_GB_PATH,
+    DEFAULT_GB_LANGUAGES_PATH,
     DEFAULT_WALS_PATH,
     DEFAULT_COUNTS_PATH,
     DEFAULT_GB_FEATURES_PATH,
@@ -48,7 +48,7 @@ def create_arg_parser():
     parser.add_argument(
         "-gb_path",
         type=Path,
-        default=DEFAULT_GB_PATH,
+        default=DEFAULT_GB_LANGUAGES_PATH,
         help="File with Grambank language information.",
     )
     parser.add_argument(

@@ -9,7 +9,7 @@ import pandas as pd
 from typdiv_sampling.constants import (
     DEFAULT_COUNTS_PATH,
     DEFAULT_DISTANCES_PATH,
-    DEFAULT_GB_PATH,
+    DEFAULT_GB_LANGUAGES_PATH,
     DEFAULT_WALS_PATH,
 )
 from typdiv_sampling.distance import get_first_point, get_summed_dist_dict
@@ -23,7 +23,7 @@ class Sampler:
     def __init__(
         self,
         dist_path: Path = DEFAULT_DISTANCES_PATH,
-        gb_path: Path = DEFAULT_GB_PATH,
+        gb_path: Path = DEFAULT_GB_LANGUAGES_PATH,
         wals_path: Path = DEFAULT_WALS_PATH,
         counts_path: Path = DEFAULT_COUNTS_PATH,
     ) -> None:
@@ -36,6 +36,7 @@ class Sampler:
         self.wals_path = wals_path
         self.counts_path = counts_path
 
+        # These variables are lazily loaded below.
         self._dist_df = None
         self._gb_df = None
         self._wals_df = None

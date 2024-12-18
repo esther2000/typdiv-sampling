@@ -4,6 +4,8 @@ import itertools
 import geopy.distance
 import numpy as np
 import pandas as pd
+from typdiv_sampling.constants import DEFAULT_GB_LANGUAGES_PATH
+from tqdm import tqdm
 
 
 def create_arg_parser():
@@ -41,13 +43,13 @@ def main():
     args = create_arg_parser()
 
     # retrieve language coordinates from grambank
-    gb_df = pd.read_csv("../../grambank/cldf/languages.csv")
+    gb_df = pd.read_csv(DEFAULT_GB_LANGUAGES_PATH)
     coords = {row["ID"]: row[["Latitude", "Longitude"]].to_list() for _, row in gb_df.iterrows()}
 
     # calculate pairwise km distances (may take a few minutes)
     km_dists = dict()
     pairs = list(itertools.combinations(coords.keys(), 2))
-    for l1, l2 in pairs:
+    for l1, l2 in tqdm(pairs, desc="Calculating pairs"):
         try:
             km_dists[(l1, l2)] = geopy.distance.geodesic(coords[l1], coords[l2]).km
         except ValueError:

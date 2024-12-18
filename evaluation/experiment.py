@@ -9,7 +9,7 @@ from typdiv_sampling.evaluation import Evaluator, Result
 from typdiv_sampling.sampling import Sampler
 from typdiv_sampling.constants import (
     DEFAULT_DISTANCES_PATH,
-    DEFAULT_GB_PATH,
+    DEFAULT_GB_LANGUAGES_PATH,
     DEFAULT_WALS_PATH,
     DEFAULT_GB_FEATURES_PATH,
     DEFAULT_COUNTS_PATH,
@@ -28,7 +28,7 @@ def create_arg_parser():
     parser.add_argument(
         "-gb_path",
         type=Path,
-        default=DEFAULT_GB_PATH,
+        default=DEFAULT_GB_LANGUAGES_PATH,
         help="File with Grambank language information.",
     )
     parser.add_argument(
