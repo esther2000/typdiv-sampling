@@ -142,6 +142,7 @@ You need to:
 
 2. Provide the path to this csv to the sampling and/or evaluation methods.
 
+For a full example of custom features and distances, check `use_cases/custom_features`.
 
 ## Reproducibility
 
