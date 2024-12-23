@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Callable
 
 import pandas as pd
+import numpy as np
 
 from typdiv_sampling.constants import (
     DEFAULT_COUNTS_PATH,
@@ -12,7 +13,7 @@ from typdiv_sampling.constants import (
     DEFAULT_GB_LANGUAGES_PATH,
     DEFAULT_WALS_PATH,
 )
-from typdiv_sampling.distance import get_first_point, get_summed_dist_dict
+from typdiv_sampling.distance import get_summed_dist_dict
 
 Language = str
 SamplingFunc = Callable[[list[Language], int, int], list[Language]]
@@ -72,7 +73,7 @@ class Sampler:
         """
         dists, id2lang = self.get_dists(frame)
 
-        p1 = get_first_point(dists)
+        p1 = np.argmax(dists.sum(axis=1))  # the first point
         p2 = dists[p1].argmax()
 
         L = {i for i in range(dists.shape[0])}

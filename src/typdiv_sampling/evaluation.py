@@ -19,7 +19,7 @@ def entropy(string: str) -> float:
     prob = [string.count(c) / len(string) for c in set(list(string))]
     entropy = -sum(p * math.log(p) / math.log(2.0) for p in prob)
 
-    return entropy
+    return round(entropy, 10)
 
 
 def fvi(string: str) -> float:
@@ -27,39 +27,6 @@ def fvi(string: str) -> float:
     Return the number of unique feature values included for a binary feature string.
     """
     return len(set(string)) / 2
-
-
-def mpd(pairs: list, distances: dict) -> float:
-    """
-    Calculate mean pairwise distance for each string
-    """
-    mpds = []
-    for pair in pairs:
-        mpds.append(distances[pair[0]][pair[1]])
-
-    return sum(mpds) / len(mpds)
-
-
-def fvo(pairs: list, feats: dict) -> float:
-    """
-    Calculate fraction of feature value overlap per language pair in sample
-    """
-    fracs = []
-    for pair in pairs:
-        same, total = 0, 0
-        l1_feats, l2_feats = feats[pair[0]], feats[pair[1]]
-        for f1, f2 in zip(l1_feats, l2_feats):
-            if np.isnan(f1) or np.isnan(f2):
-                continue
-            if f1 == f2:
-                same += 1
-            total += 1
-            try:
-                fracs.append(same / total)
-            except ZeroDivisionError:
-                pass  # TODO: or append 0?
-
-    return sum(fracs) / len(fracs)
 
 
 @dataclass(frozen=True)
@@ -82,24 +49,38 @@ class Evaluator:
         distances_path: Path = DEFAULT_DISTANCES_PATH,
     ) -> None:
         features = pd.read_csv(features_path, index_col="Lang_ID")
-        dist_df = pd.read_csv(distances_path, index_col="Lang_ID")
-
-        dist_dict = dist_df.to_dict("dict")  # TODO: this contains double info
         features_by_lang = {i: np.array(row) for i, row in features.iterrows()}
 
+        self.distances = pd.read_csv(distances_path, index_col="Lang_ID")
         self.features_by_lang = features_by_lang
         self.n_features = features.shape[1]
         self.cache: dict[str, Result] = dict()
-        self.distances = dist_dict
 
     def evaluate_sample(self, sample: list[Language], run: int | None = None) -> Result:
-        if (sample_key := "".join(sorted(sample))) and sample_key in self.cache:
+        if (sample_key := hash("".join(sorted(sample)))) and sample_key in self.cache:
             return self.cache[sample_key]
 
         # Language-based methods: MPD, FVO
         pairs = list(itertools.combinations(sample, 2))
-        mpd_score = mpd(pairs, self.distances)
-        fvo_score = fvo(pairs, self.features_by_lang)
+        mpds = []
+        for pair in pairs:
+            mpds.append(self.distances[pair[0]][pair[1]])
+        mpd_score = sum(mpds) / len(mpds)
+
+        fracs = []
+        for pair in pairs:
+            same, total = 0, 0
+            l1_feats, l2_feats = self.features_by_lang[pair[0]], self.features_by_lang[pair[1]]
+            for f1, f2 in zip(l1_feats, l2_feats):
+                if (not np.isnan(f1)) and (not np.isnan(f2)):
+                    if f1 == f2:
+                        same += 1
+                    total += 1
+                try:
+                    fracs.append(same / total)
+                except ZeroDivisionError:
+                    pass  # TODO: or append 0?
+        fvo_score = sum(fracs) / len(fracs)
 
         # Feature-based methods: Entropy, FVI
         ents_with_missing, ents_without_missing, fvis = [], [], []
