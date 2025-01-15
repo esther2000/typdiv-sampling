@@ -76,7 +76,12 @@ def create_arg_parser():
         type=str,
         help="List of glottocodes (rows) that should be included, the rest is ignored.",
     )
-
+    parser.add_argument(
+        "-n",
+        "--normalize_dists",
+        action="store_true",
+        help="Normalize language distances.",
+    )
     args = parser.parse_args()
     return args
 
@@ -117,63 +122,52 @@ def main():
 
     # Optional: include only a subset of features
     if incl_feats := args.include_features:
-        print(f"Only incuding features {incl_feats=}")
         before = df.shape
         df = df[incl_feats]
         after = df.shape
-        print(f"{before=} and {after=}")
+        print(f"Incl features {before=} and {after=}")
 
     # Optional: include only a subset of languages
     if incl_langs := args.include_languages:
-        print(f"Only incuding languages {incl_langs=}")
-        before = len(df)
+        before = df.shape
         df = df[df.index.isin(incl_langs)]
-        after = len(df)
-        print(f"{before=} and {after=}")
+        after = df.shape
+        print(f"Incl features {before=} and {after=}")
 
     # Optional: binarize multi-value features
     if args.binarize:
-        print(f"Binarizing multi value features {GB_MULTI_VALUE_FEATURES}")
         before = df.shape
         # We have possibly removed values in the first step
-        to_process = sorted(
-            list(set(GB_MULTI_VALUE_FEATURES).intersection(set(df.columns)))
-        )
+        to_process = sorted(list(set(GB_MULTI_VALUE_FEATURES).intersection(set(df.columns))))
         df = binarize(df, to_process)
         after = df.shape
-        print(f"{before=} and {after=}")
+        print(f"Binarize {before=} and {after=}")
 
     # Optional: remove macrolanguages
     if args.remove_macro:
         if not (languoids_path := args.languoids_path):
-            raise FileNotFoundError(
-                "To remove macro languages, please provide the 'languoids_path'."
-            )
-        print("Removing macro languages")
-        before = len(df)
+            raise FileNotFoundError("To remove macro languages, please provide the 'languoids_path'.")
+        before = df.shape
         glottolog_data = pd.read_csv(languoids_path)
-        df = df[
-            df.index.isin(
-                glottolog_data[glottolog_data["child_language_count"] == 0]["id"]
-            )
-        ]
-        after = len(df)
-        print(f"{before=} and {after=}")
+        df = df[df.index.isin(glottolog_data[glottolog_data["child_language_count"] == 0]["id"])]
+        after = df.shape
+        print(f"Macro {before=} and {after=}")
 
     # Optional: crop langs according to feature coverage
     if crop_percentage := args.crop:  # specify minimum % coverage per lang
-        before = len(df)
+        before = df.shape
         threshold = crop_percentage * df.shape[1]
+        print(f"{threshold=}")
+        print(df.notnull().sum(axis=1).to_string())
         df = df[df.notnull().sum(axis=1) > threshold]
-        print(f"Cropping with {crop_percentage=}")
-        after = len(df)
-        print(f"{before=} and {after=}")
+        after = df.shape
+        print(f"Crop {before=} and {after=}")
 
     # Save (processed) Grambank version
-    df.to_csv(args.output_path, index="Lang_ID")
+    df.astype("Int64", errors="ignore").to_csv(args.output_path, index="Lang_ID")
 
     # At this point we have the data in the correct format to create distances
-    distances = make_language_distances(df)
+    distances = make_language_distances(df, args.normalize_dists)
     distances.to_csv(args.distances_path)
 
 

@@ -1,18 +1,18 @@
 #!/bin/bash
 
-#set -xe
-#pip install -e .
+set -xe
 
 # Compute language distances, with the following options:
 # binarize multistate values, remove macro-languages, crop languages for which >25% data is unavailable, normalize distances
-python ../data/compute_all_distances.py -b -n -r -c 0.75 \
-                                     -g ../data/gb_lang_feat_vals.csv \
-                                     -o ../data/gb_lang_dists-bnrc75.csv
+python ../data/prepare_grambank.py -b -n -r -c 0.25 \
+    -g ../data/gb_lang_feat_vals.csv \
+    -d ../data/new_dists.csv \
+    -o ../data/gb_processed.csv
 
 # Sample with all methods and various values
 python experiment.py \
-    --results_path results/intrinsic-eval.csv \
-    --dist_path ../data/gb_lang_dists-bnrc75.csv \
+    --results_path results/intrinsic-eval-refactor.csv \
+    --dist_path ../data/new_dists.csv \
     -gb_path ../grambank/cldf/languages.csv \
     -wals_path ../data/wals_dedup.csv \
     -gb_features_path ../data/gb_processed.csv \
@@ -22,6 +22,5 @@ python experiment.py \
     -e 140 \
     -st 3
 
-
 # Visualize results in plots
-python plots/plot.py -r results/intrinsic-eval.csv -o plots/intrinsic-eval.pdf
+python plots/plot.py -r results/intrinsic-eval-refactor.csv -o plots/intrinsic-eval-refactor.pdf
