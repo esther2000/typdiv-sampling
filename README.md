@@ -25,22 +25,22 @@ For the specific version related to the initial preprint, please check the `prep
 
 
 ## Installation and data
-The package is tested with Python 3.10.
+The package is tested with Python 3.10+.
 
 ```sh
 git clone https://github.com/esther2000/typdiv-sampling
 cd typdiv-sampling
-pip install .
+pip install -e .
 ```
 
 Alternatively, with visualization support:
 ```sh
-pip install ".[vis]"
+pip install -e ".[vis]"
 ```
 
 Or for development:
 ```sh
-pip install ".[dev]"
+pip install -e ".[dev]"
 pre-commit install
 pre-commit run --all-files
 ```
