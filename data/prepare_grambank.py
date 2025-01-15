@@ -158,7 +158,6 @@ def main():
         before = df.shape
         threshold = crop_percentage * df.shape[1]
         print(f"{threshold=}")
-        print(df.notnull().sum(axis=1).to_string())
         df = df[df.notnull().sum(axis=1) > threshold]
         after = df.shape
         print(f"Crop {before=} and {after=}")
